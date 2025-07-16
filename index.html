@@ -10,7 +10,7 @@
       margin: 20px; 
       background-color: #f8f8f0;
       color: #333;
-      position: relative; /* Added for guide button positioning */
+      position: relative;
     }
     .container { 
       max-width: 900px; 
@@ -32,8 +32,6 @@
       font-weight: normal;
       margin-top: 5px;
     }
-    /* Other existing styles remain the same... */
-    
     /* Guide button styles */
     #guideBtn {
       position: fixed;
@@ -47,11 +45,70 @@
       border-radius: 4px;
       cursor: pointer;
       text-decoration: none;
-      display: none; /* Hidden by default */
+      display: none;
       z-index: 1000;
     }
     #guideBtn:hover {
       background-color: #b38f2b;
+    }
+    /* Add your other existing styles here */
+    label { 
+      display: block; 
+      margin-bottom: 5px; 
+      font-weight: bold; 
+      color: #008080;
+    }
+    input[type="text"], input[type="password"], input[type="date"], textarea, select {
+      width: calc(100% - 22px); 
+      padding: 10px; 
+      margin-bottom: 15px; 
+      border: 1px solid #ddd; 
+      border-radius: 4px;
+      background-color: #f8f8f0;
+    }
+    button {
+      background-color: #008080;
+      color: white; 
+      padding: 10px 15px; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer; 
+      font-size: 16px; 
+      margin-right: 10px;
+    }
+    button:hover { 
+      background-color: #006666;
+    }
+    .lesson-card {
+      background-color: #f0f8f8;
+      border: 1px solid #cce5e5; 
+      border-left: 5px solid #D4AF37;
+      padding: 15px; 
+      margin-bottom: 10px; 
+      border-radius: 5px; 
+      position: relative;
+    }
+    .delete-btn {
+      position: absolute; 
+      top: 10px; 
+      right: 10px; 
+      background-color: #D4AF37;
+      color: #333;
+    }
+    .delete-btn:hover { 
+      background-color: #b38f2b;
+    }
+    .error-message { 
+      color: #c00; 
+      margin-top: 10px; 
+    }
+    .success-message { 
+      color: #008080; 
+      margin-top: 10px; 
+    }
+    .info-message { 
+      color: #D4AF37;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -77,7 +134,40 @@
     </div>
 
     <div id="adminSection" style="display:none;">
-      <!-- Rest of your admin section content... -->
+      <h3>Καταχώριση Ύλης</h3>
+      <label for="lessonInput">Μάθημα:</label>
+      <input type="text" id="lessonInput" required />
+      <label for="classInput">Τμήμα:</label>
+      <input type="text" id="classInput" required />
+      <label for="dateInput">Ημερομηνία:</label>
+      <input type="date" id="dateInput" required />
+      <label for="taughtMaterialInput">Ύλη που διδάχθηκε:</label>
+      <textarea id="taughtMaterialInput" required></textarea>
+      <label for="attentionNotesInput">Τι πρέπει να προσέξουν οι μαθητές:</label>
+      <textarea id="attentionNotesInput"></textarea>
+      <button id="submitLessonBtn">Καταχώριση Ύλης</button>
+      <p id="adminMessage" class="success-message"></p>
+      <button id="logoutBtn">Αποσύνδεση Εκπαιδευτικού</button>
+
+      <div id="privateNotesSection">
+        <h3>Ιδιωτικές Σημειώσεις</h3>
+        <label for="privateLastName">Επίθετο Μαθητή:</label>
+        <input type="text" id="privateLastName" required />
+        <label for="privateClass">Τμήμα:</label>
+        <input type="text" id="privateClass" required />
+        <label for="privateNotesInput">Σημειώσεις:</label>
+        <textarea id="privateNotesInput" required></textarea>
+        <button id="submitPrivateNoteBtn">Καταχώριση Σημείωσης</button>
+        <p id="privateNoteMessage" class="success-message"></p>
+
+        <h4>Αναζήτηση Σημειώσεων</h4>
+        <label for="searchLastNameInput">Επίθετο Μαθητή:</label>
+        <input type="text" id="searchLastNameInput" />
+        <label for="searchClassInput">Τμήμα:</label>
+        <input type="text" id="searchClassInput" />
+        <button id="searchPrivateNotesBtn">Αναζήτηση Σημειώσεων</button>
+        <div id="privateNotesList"></div>
+      </div>
     </div>
 
     <h3>Προβολή Ύλης</h3>
@@ -89,11 +179,11 @@
   </div>
 
   <script type="module">
-    // Import the functions you need from the SDKs you need
+    // Import Firebase functions
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     
-    // Your web app's Firebase configuration
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDVoOQsCrEvhRbFZP4rBgyf9dEd-AQq-us",
       authDomain: "schoolappv2-c1c84.firebaseapp.com",
@@ -108,12 +198,15 @@
     const auth = getAuth(app);
     const guideBtn = document.getElementById('guideBtn');
     
-    // Monitor auth state
+    // Export auth for use in main.js
+    window.auth = auth;
+    
+    // Monitor auth state for guide button visibility
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        guideBtn.style.display = 'block'; // Show guide button for logged-in users
+        guideBtn.style.display = 'block';
       } else {
-        guideBtn.style.display = 'none'; // Hide guide button for guests
+        guideBtn.style.display = 'none';
       }
     });
   </script>
