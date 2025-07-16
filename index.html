@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Παναγιώτης Δόμβρος - Διευθυντής 1ου Γυμνασίου Πυλαίας</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+    .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    h1 { color: #003366; font-size: 26px; }
+    h2, h3, h4 { color: #0056b3; margin-top: 10px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input[type="text"], input[type="password"], input[type="date"], textarea {
+      width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px;
+    }
+    button {
+      background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-right: 10px;
+    }
+    button:hover { background-color: #0056b3; }
+    .lesson-card {
+      background-color: #e9f5ff; border: 1px solid #cce5ff; border-left: 5px solid #007bff;
+      padding: 15px; margin-bottom: 10px; border-radius: 5px; position: relative;
+    }
+    .delete-btn {
+      position: absolute; top: 10px; right: 10px; background-color: #dc3545;
+    }
+    .delete-btn:hover { background-color: #c82333; }
+    .error-message { color: red; margin-top: 10px; }
+    .success-message { color: green; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Παναγιώτης Δόμβρος - Διευθυντής 1ου Γυμνασίου Πυλαίας</h1>
+    <h2>Ύλη διδασκόμενων μαθημάτων</h2>
+
+    <div id="loginForm">
+      <label for="email">Email:</label>
+      <input type="text" id="email" />
+      <label for="password">Κωδικός:</label>
+      <input type="password" id="password" />
+      <button id="loginBtn">Σύνδεση Εκπαιδευτικού</button>
+      <p id="loginError" class="error-message"></p>
+    </div>
+
+    <div id="adminSection" style="display:none;">
+      <h3>Καταχώριση Ύλης</h3>
+      <label for="lessonInput">Μάθημα:</label>
+      <input type="text" id="lessonInput" />
+      <label for="classInput">Τμήμα:</label>
+      <input type="text" id="classInput" />
+      <label for="dateInput">Ημερομηνία:</label>
+      <input type="date" id="dateInput" />
+      <label for="taughtMaterialInput">Ύλη που διδάχθηκε:</label>
+      <textarea id="taughtMaterialInput"></textarea>
+      <label for="attentionNotesInput">Τι πρέπει να προσέξουν οι μαθητές:</label>
+      <textarea id="attentionNotesInput"></textarea>
+      <button id="submitLessonBtn">Καταχώριση Ύλης</button>
+      <p id="adminMessage" class="success-message"></p>
+      <button id="logoutBtn">Αποσύνδεση Εκπαιδευτικού</button>
+
+      <div id="privateNotesSection">
+        <h3>Ιδιωτικές Σημειώσεις</h3>
+        <label for="privateLastName">Επίθετο Μαθητή:</label>
+        <input type="text" id="privateLastName" />
+        <label for="privateClass">Τμήμα:</label>
+        <input type="text" id="privateClass" />
+        <label for="privateNotesInput">Σημειώσεις:</label>
+        <textarea id="privateNotesInput"></textarea>
+        <button id="submitPrivateNoteBtn">Καταχώριση Σημείωσης</button>
+        <p id="privateNoteMessage" class="success-message"></p>
+
+        <h4>Αναζήτηση Σημειώσεων</h4>
+        <label for="searchLastNameInput">Επίθετο Μαθητή:</label>
+        <input type="text" id="searchLastNameInput" />
+        <label for="searchClassInput">Τμήμα:</label>
+        <input type="text" id="searchClassInput" />
+        <button id="searchPrivateNotesBtn">Αναζήτηση Σημειώσεων</button>
+        <div id="privateNotesList"></div>
+      </div>
+    </div>
+
+    <h3>Προβολή Ύλης</h3>
+    <label for="studentClass">Τμήμα Μαθητή:</label>
+    <input type="text" id="studentClass" />
+    <button id="viewLessonsBtn">Προβολή Ύλης</button>
+    <p id="guestMessage" class="error-message"></p>
+    <div id="lessonsContainer"></div>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+
+</body>
+</html>
