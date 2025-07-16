@@ -71,13 +71,18 @@ logoutBtn.addEventListener("click", async () => {
 });
 
 submitLessonBtn.addEventListener("click", async () => {
+  if (!lessonInput.value || !classInput.value || !dateInput.value || !taughtMaterialInput.value) {
+    adminMessage.textContent = "Συμπληρώστε όλα τα απαραίτητα πεδία (Μάθημα, Τμήμα, Ημερομηνία, Ύλη)";
+    return;
+  }
+
   try {
     await addDoc(collection(db, "lessons"), {
       lesson: lessonInput.value,
       class: classInput.value.toUpperCase(),
       date: dateInput.value,
       taughtMaterial: taughtMaterialInput.value,
-      attentionNotes: attentionNotesInput.value,
+      attentionNotes: attentionNotesInput.value || "—",
       timestamp: new Date().toISOString()
     });
     adminMessage.textContent = "Η ύλη καταχωρίστηκε!";
@@ -92,6 +97,11 @@ viewLessonsBtn.addEventListener("click", async () => {
   lessonsContainer.innerHTML = "";
   guestMessage.textContent = "";
 
+  if (!studentClass) {
+    guestMessage.textContent = "Εισάγετε τμήμα για αναζήτηση";
+    return;
+  }
+
   try {
     const q = query(
       collection(db, "lessons"),
@@ -100,7 +110,7 @@ viewLessonsBtn.addEventListener("click", async () => {
     );
     const snapshot = await getDocs(q);
     if (snapshot.empty) {
-      guestMessage.textContent = "Δεν βρέθηκε ύλη.";
+      guestMessage.textContent = `Δεν βρέθηκε ύλη για το τμήμα ${studentClass}`;
       return;
     }
     snapshot.forEach((docSnap) => {
@@ -128,14 +138,20 @@ viewLessonsBtn.addEventListener("click", async () => {
     });
   } catch (error) {
     guestMessage.textContent = "Σφάλμα: " + error.message;
+    console.error(error);
   }
 });
 
 submitPrivateNoteBtn.addEventListener("click", async () => {
+  if (!privateLastName.value || !privateClass.value || !privateNotesInput.value) {
+    privateNoteMessage.textContent = "Συμπληρώστε όλα τα πεδία (Επίθετο, Τμήμα, Σημειώσεις)";
+    return;
+  }
+
   try {
     await addDoc(collection(db, "privateNotes"), {
-      lastName: privateLastName.value,
-      class: privateClass.value,
+      lastName: privateLastName.value.trim(),
+      class: privateClass.value.toUpperCase(),
       note: privateNotesInput.value,
       timestamp: new Date().toISOString()
     });
@@ -156,31 +172,40 @@ async function loadPrivateNotes(lastName = "", classVal = "") {
   let q = collection(db, "privateNotes");
 
   if (lastName && classVal) {
-    q = query(q, where("lastName", "==", lastName), where("class", "==", classVal));
+    q = query(q, where("lastName", "==", lastName), where("class", "==", classVal.toUpperCase()));
   } else if (lastName) {
     q = query(q, where("lastName", "==", lastName));
   } else if (classVal) {
-    q = query(q, where("class", "==", classVal));
+    q = query(q, where("class", "==", classVal.toUpperCase()));
   } else {
     q = query(q, orderBy("timestamp", "desc"));
   }
 
-  const snapshot = await getDocs(q);
-  snapshot.forEach(docSnap => {
-    const data = docSnap.data();
-    const div = document.createElement("div");
-    div.className = "lesson-card";
-    div.innerHTML = `<p><strong>${data.lastName} (${data.class}):</strong> ${data.note}</p>`;
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "Διαγραφή";
-    delBtn.className = "delete-btn";
-    delBtn.onclick = async () => {
-      if (confirm("Διαγραφή σημείωσης;")) {
-        await deleteDoc(doc(db, "privateNotes", docSnap.id));
-        loadPrivateNotes(lastName, classVal);
-      }
-    };
-    div.appendChild(delBtn);
-    privateNotesList.appendChild(div);
-  });
+  try {
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+      privateNotesList.innerHTML = "<p>Δεν βρέθηκαν σημειώσεις</p>";
+      return;
+    }
+    
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const div = document.createElement("div");
+      div.className = "lesson-card";
+      div.innerHTML = `<p><strong>${data.lastName} (${data.class}):</strong> ${data.note}</p>`;
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Διαγραφή";
+      delBtn.className = "delete-btn";
+      delBtn.onclick = async () => {
+        if (confirm("Διαγραφή σημείωσης;")) {
+          await deleteDoc(doc(db, "privateNotes", docSnap.id));
+          loadPrivateNotes(lastName, classVal);
+        }
+      };
+      div.appendChild(delBtn);
+      privateNotesList.appendChild(div);
+    });
+  } catch (error) {
+    privateNotesList.innerHTML = `<p class="error-message">Σφάλμα: ${error.message}</p>`;
+  }
 }

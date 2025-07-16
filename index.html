@@ -10,7 +10,7 @@
     h1 { color: #003366; font-size: 26px; }
     h2, h3, h4 { color: #0056b3; margin-top: 10px; }
     label { display: block; margin-bottom: 5px; font-weight: bold; }
-    input[type="text"], input[type="password"], input[type="date"], textarea {
+    input[type="text"], input[type="password"], input[type="date"], textarea, select {
       width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px;
     }
     button {
@@ -27,6 +27,7 @@
     .delete-btn:hover { background-color: #c82333; }
     .error-message { color: red; margin-top: 10px; }
     .success-message { color: green; margin-top: 10px; }
+    .info-message { color: #0066cc; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -46,13 +47,13 @@
     <div id="adminSection" style="display:none;">
       <h3>Καταχώριση Ύλης</h3>
       <label for="lessonInput">Μάθημα:</label>
-      <input type="text" id="lessonInput" />
+      <input type="text" id="lessonInput" required />
       <label for="classInput">Τμήμα:</label>
-      <input type="text" id="classInput" />
+      <input type="text" id="classInput" required />
       <label for="dateInput">Ημερομηνία:</label>
-      <input type="date" id="dateInput" />
+      <input type="date" id="dateInput" required />
       <label for="taughtMaterialInput">Ύλη που διδάχθηκε:</label>
-      <textarea id="taughtMaterialInput"></textarea>
+      <textarea id="taughtMaterialInput" required></textarea>
       <label for="attentionNotesInput">Τι πρέπει να προσέξουν οι μαθητές:</label>
       <textarea id="attentionNotesInput"></textarea>
       <button id="submitLessonBtn">Καταχώριση Ύλης</button>
@@ -62,11 +63,11 @@
       <div id="privateNotesSection">
         <h3>Ιδιωτικές Σημειώσεις</h3>
         <label for="privateLastName">Επίθετο Μαθητή:</label>
-        <input type="text" id="privateLastName" />
+        <input type="text" id="privateLastName" required />
         <label for="privateClass">Τμήμα:</label>
-        <input type="text" id="privateClass" />
+        <input type="text" id="privateClass" required />
         <label for="privateNotesInput">Σημειώσεις:</label>
-        <textarea id="privateNotesInput"></textarea>
+        <textarea id="privateNotesInput" required></textarea>
         <button id="submitPrivateNoteBtn">Καταχώριση Σημείωσης</button>
         <p id="privateNoteMessage" class="success-message"></p>
 
@@ -82,14 +83,12 @@
 
     <h3>Προβολή Ύλης</h3>
     <label for="studentClass">Τμήμα Μαθητή:</label>
-    <input type="text" id="studentClass" />
+    <input type="text" id="studentClass" required />
     <button id="viewLessonsBtn">Προβολή Ύλης</button>
-    <p id="guestMessage" class="error-message"></p>
+    <p id="guestMessage" class="info-message"></p>
     <div id="lessonsContainer"></div>
   </div>
 
   <script type="module" src="./main.js"></script>
-
-
 </body>
 </html>
