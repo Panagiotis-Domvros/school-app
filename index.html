@@ -9,7 +9,8 @@
       font-family: Arial, sans-serif; 
       margin: 20px; 
       background-color: #f8f8f0;
-      color: #333; 
+      color: #333;
+      position: relative; /* Added for guide button positioning */
     }
     .container { 
       max-width: 900px; 
@@ -25,16 +26,19 @@
       border-bottom: 2px solid #D4AF37;
       padding-bottom: 10px;
     }
-    /* Other existing styles... */
+    h2 {
+      font-size: 14px;
+      color: #666;
+      font-weight: normal;
+      margin-top: 5px;
+    }
+    /* Other existing styles remain the same... */
     
-    /* New guide button styles */
-    .guide-btn-container {
+    /* Guide button styles */
+    #guideBtn {
       position: fixed;
       top: 20px;
       right: 20px;
-      z-index: 1000;
-    }
-    .guide-btn {
       background-color: #D4AF37;
       color: #333;
       padding: 8px 12px;
@@ -44,33 +48,52 @@
       cursor: pointer;
       text-decoration: none;
       display: none; /* Hidden by default */
+      z-index: 1000;
     }
-    .guide-btn:hover {
+    #guideBtn:hover {
       background-color: #b38f2b;
     }
   </style>
 </head>
 <body>
-  <!-- Guide Button Container -->
-  <div class="guide-btn-container">
-    <a href="https://panagiotis-domvros.github.io/school-app-guide/" 
-       class="guide-btn" 
-       id="guideBtn"
-       target="_blank">
-      Οδηγός Χρήσης
-    </a>
-  </div>
+  <!-- Guide Button - Initially hidden -->
+  <a href="https://panagiotis-domvros.github.io/school-app-guide/" 
+     id="guideBtn"
+     target="_blank">
+    Οδηγός Χρήσης
+  </a>
 
   <div class="container">
-    <!-- Rest of your existing HTML content... -->
+    <h1>Καταχωρίσεις Ύλης</h1>
+    <h2>Δημιουργία: Παναγιώτης Δόμβρος - Διευθυντής 1ου Γυμνασίου Πυλαίας, All rights reserved 2025-26</h2>
+
+    <div id="loginForm">
+      <label for="email">Email:</label>
+      <input type="text" id="email" />
+      <label for="password">Κωδικός:</label>
+      <input type="password" id="password" />
+      <button id="loginBtn">Σύνδεση Εκπαιδευτικού</button>
+      <p id="loginError" class="error-message"></p>
+    </div>
+
+    <div id="adminSection" style="display:none;">
+      <!-- Rest of your admin section content... -->
+    </div>
+
+    <h3>Προβολή Ύλης</h3>
+    <label for="studentClass">Τμήμα Μαθητή:</label>
+    <input type="text" id="studentClass" required />
+    <button id="viewLessonsBtn">Προβολή Ύλης</button>
+    <p id="guestMessage" class="info-message"></p>
+    <div id="lessonsContainer"></div>
   </div>
 
   <script type="module">
-    // Import Firebase auth functions
+    // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     
-    // Your Firebase config
+    // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDVoOQsCrEvhRbFZP4rBgyf9dEd-AQq-us",
       authDomain: "schoolappv2-c1c84.firebaseapp.com",
@@ -88,13 +111,13 @@
     // Monitor auth state
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        guideBtn.style.display = 'block'; // Show for logged-in users
+        guideBtn.style.display = 'block'; // Show guide button for logged-in users
       } else {
-        guideBtn.style.display = 'none'; // Hide for guests
+        guideBtn.style.display = 'none'; // Hide guide button for guests
       }
     });
   </script>
-  
+
   <script type="module" src="./main.js"></script>
 </body>
 </html>
