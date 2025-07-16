@@ -5,35 +5,100 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Παναγιώτης Δόμβρος - Διευθυντής 1ου Γυμνασίου Πυλαίας</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-    .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    h1 { color: #003366; font-size: 26px; }
-    h2, h3, h4 { color: #0056b3; margin-top: 10px; }
-    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 20px; 
+      background-color: #f8f8f0; /* off-white */
+      color: #333; 
+    }
+    .container { 
+      max-width: 900px; 
+      margin: auto; 
+      background: white; 
+      padding: 20px; 
+      border-radius: 8px; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
+    h1 { 
+      color: #008080; /* teal */
+      font-size: 26px; 
+      border-bottom: 2px solid #D4AF37; /* gold */
+      padding-bottom: 10px;
+    }
+    h2, h3, h4 { 
+      color: #008080; /* teal */
+      margin-top: 10px; 
+    }
+    h2 {
+      font-size: 14px; /* 1/5 of original (assuming original was ~26px like h1) */
+      color: #666;
+      font-weight: normal;
+      margin-top: 5px;
+    }
+    label { 
+      display: block; 
+      margin-bottom: 5px; 
+      font-weight: bold; 
+      color: #008080; /* teal */
+    }
     input[type="text"], input[type="password"], input[type="date"], textarea, select {
-      width: calc(100% - 22px); padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px;
+      width: calc(100% - 22px); 
+      padding: 10px; 
+      margin-bottom: 15px; 
+      border: 1px solid #ddd; 
+      border-radius: 4px;
+      background-color: #f8f8f0; /* off-white */
     }
     button {
-      background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-right: 10px;
+      background-color: #008080; /* teal */
+      color: white; 
+      padding: 10px 15px; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer; 
+      font-size: 16px; 
+      margin-right: 10px;
     }
-    button:hover { background-color: #0056b3; }
+    button:hover { 
+      background-color: #006666; /* darker teal */
+    }
     .lesson-card {
-      background-color: #e9f5ff; border: 1px solid #cce5ff; border-left: 5px solid #007bff;
-      padding: 15px; margin-bottom: 10px; border-radius: 5px; position: relative;
+      background-color: #f0f8f8; /* light teal */
+      border: 1px solid #cce5e5; 
+      border-left: 5px solid #D4AF37; /* gold */
+      padding: 15px; 
+      margin-bottom: 10px; 
+      border-radius: 5px; 
+      position: relative;
     }
     .delete-btn {
-      position: absolute; top: 10px; right: 10px; background-color: #dc3545;
+      position: absolute; 
+      top: 10px; 
+      right: 10px; 
+      background-color: #D4AF37; /* gold */
+      color: #333;
     }
-    .delete-btn:hover { background-color: #c82333; }
-    .error-message { color: red; margin-top: 10px; }
-    .success-message { color: green; margin-top: 10px; }
-    .info-message { color: #0066cc; margin-top: 10px; }
+    .delete-btn:hover { 
+      background-color: #b38f2b; /* darker gold */
+    }
+    .error-message { 
+      color: #c00; 
+      margin-top: 10px; 
+    }
+    .success-message { 
+      color: #008080; /* teal */
+      margin-top: 10px; 
+    }
+    .info-message { 
+      color: #D4AF37; /* gold */
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Παναγιώτης Δόμβρος - Διευθυντής 1ου Γυμνασίου Πυλαίας</h1>
-    <h2>Ύλη διδασκόμενων μαθημάτων</h2>
+    <h1>Καταχωρίσεις Ύλης</h1>
+    <h2>Δημιουργία: Παναγιώτης Δόμβρος - Διευθυντής 1ου Γυμνασίου Πυλαίας, All rights reserved 2025-26</h2>
 
     <div id="loginForm">
       <label for="email">Email:</label>
