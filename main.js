@@ -14,10 +14,10 @@ import {
   query, 
   where, 
   orderBy, 
-  getDocs 
+  getDocs,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDVoOQsCrEvhRbFZP4rBgyf9dEd-AQq-us",
   authDomain: "schoolappv2-c1c84.firebaseapp.com",
@@ -27,290 +27,197 @@ const firebaseConfig = {
   appId: "1:70334432902:web:d8ba08cfcf6d912fca3307"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// DOM Elements
-const loginForm = document.getElementById("loginForm");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const loginBtn = document.getElementById("loginBtn");
-const loginError = document.getElementById("loginError");
+// Λίστα καθηγητών με ελληνικά ονόματα
+const TEACHERS = {
+  'pa.domvros@gmail.com': 'Παναγιώτης Δόμβρος',
+  'mariamalamidou@gmail.com': 'Μαρία Μαλαμίδου',
+  'eleni@example.com': 'Ελένη Παπαδοπούλου',
+  // Προσθέστε άλλους καθηγητές παρακάτω:
+  'newteacher@example.com': 'Νέος Καθηγητής'
+};
 
-const adminSection = document.getElementById("adminSection");
-const lessonInput = document.getElementById("lessonInput");
-const classInput = document.getElementById("classInput");
-const dateInput = document.getElementById("dateInput");
-const taughtMaterialInput = document.getElementById("taughtMaterialInput");
-const attentionNotesInput = document.getElementById("attentionNotesInput");
-const submitLessonBtn = document.getElementById("submitLessonBtn");
-const adminMessage = document.getElementById("adminMessage");
-const logoutBtn = document.getElementById("logoutBtn");
+// Αντιστοίχιση Σχολείων -> Μαθημάτων -> Τμημάτων -> Καθηγητών
+const TEACHER_ASSIGNMENTS = {
+  '1st_gymnasio_pylaias': {               // 1ο Γυμνάσιο Πυλαίας
+    'ΙΣΤΟΡΙΑ': {                           // Μάθημα
+      'Β4': 'pa.domvros@gmail.com',        // Τμήμα Β4 -> Παναγιώτης Δόμβρος
+      'Γ5': 'pa.domvros@gmail.com'         // Τμήμα Γ5 -> Παναγιώτης Δόμβρος
+    }
+    // Προσθέστε άλλα μαθήματα για το 1ο Γυμνάσιο εδώ:
+  },
+  'gymnasio_epanomis': {                  // Γυμνάσιο Επανομής
+    'ΙΣΤΟΡΙΑ': {
+      'Γ5': 'mariamalamidou@gmail.com'     // Τμήμα Γ5 -> Μαρία Μαλαμίδου
+    },
+    'ΝΟΕΛΛΗΝΙΚΗ ΓΛΩΣΣΑ': {
+      'Γ2': 'eleni@example.com'            // Τμήμα Γ2 -> Ελένη Παπαδοπούλου
+    }
+    // Προσθέστε άλλα μαθήματα για το Γυμνάσιο Επανομής εδώ:
+  }
+};
 
-const studentClassInput = document.getElementById("studentClass");
-const viewLessonsBtn = document.getElementById("viewLessonsBtn");
-const guestMessage = document.getElementById("guestMessage");
-const lessonsContainer = document.getElementById("lessonsContainer");
-
-const privateLastName = document.getElementById("privateLastName");
-const privateClass = document.getElementById("privateClass");
-const privateNotesInput = document.getElementById("privateNotesInput");
-const submitPrivateNoteBtn = document.getElementById("submitPrivateNoteBtn");
-const privateNoteMessage = document.getElementById("privateNoteMessage");
-const privateNotesList = document.getElementById("privateNotesList");
-const searchLastNameInput = document.getElementById("searchLastNameInput");
-const searchClassInput = document.getElementById("searchClassInput");
-const searchPrivateNotesBtn = document.getElementById("searchPrivateNotesBtn");
-
-// Toggle Admin View
-function toggleAdminView(loggedIn) {
-  loginForm.style.display = loggedIn ? "none" : "block";
-  adminSection.style.display = loggedIn ? "block" : "none";
+// Βοηθητικές Συναρτήσεις
+function showMessage(elementId, message, isError = false) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.textContent = message;
+    element.style.color = isError ? '#c00' : '#008080';
+  }
 }
 
-// Auth State Listener
-onAuthStateChanged(auth, (user) => {
-  toggleAdminView(!!user);
-  if (user) {
-    console.log("Ο χρήστης είναι συνδεδεμένος:", user.email);
-    loadPrivateNotes();
-  } else {
-    console.log("Ο χρήστης αποσυνδέθηκε");
+function getTeacherName(email) {
+  if (!email) {
+    console.error("Λάθος: Δεν βρέθηκε email χρήστη.");
+    return "Καθηγητής";
   }
-});
+  const normalizedEmail = email.trim().toLowerCase();
+  return TEACHERS[normalizedEmail] || "Καθηγητής";
+}
 
-// Login Function
-loginBtn.addEventListener("click", async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
-
-  if (!email || !password) {
-    loginError.textContent = "Συμπληρώστε email και κωδικό";
-    return;
-  }
-
+// Σύνδεση/Αποσύνδεση
+async function handleLogin() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    loginError.textContent = "";
+    showMessage('loginError', '');
   } catch (error) {
-    loginError.textContent = "Σφάλμα σύνδεσης: " + error.message;
-    console.error("Σφάλμα σύνδεσης:", error);
+    showMessage('loginError', 'Λάθος email ή κωδικός', true);
   }
-});
+}
 
-// Logout Function
-logoutBtn.addEventListener("click", async () => {
+async function handleLogout() {
   try {
     await signOut(auth);
-    emailInput.value = "";
-    passwordInput.value = "";
-    adminMessage.textContent = "";
   } catch (error) {
     console.error("Σφάλμα αποσύνδεσης:", error);
   }
-});
+}
 
-// Submit Lesson Function
-submitLessonBtn.addEventListener("click", async () => {
-  const lesson = lessonInput.value.trim();
-  const classVal = classInput.value.trim().toUpperCase();
-  const date = dateInput.value;
-  const taughtMaterial = taughtMaterialInput.value.trim();
-  const attentionNotes = attentionNotesInput.value.trim();
-
-  if (!lesson || !classVal || !date || !taughtMaterial) {
-    adminMessage.textContent = "Συμπληρώστε όλα τα απαραίτητα πεδία (Μάθημα, Τμήμα, Ημερομηνία, Ύλη)";
-    adminMessage.className = "error-message";
+// Καταχώρηση Μαθήματος
+async function submitLesson() {
+  if (!auth.currentUser) {
+    showMessage('adminMessage', 'Πρέπει να συνδεθείτε πρώτα!', true);
     return;
   }
+
+  const lessonData = {
+    school: document.getElementById("schoolInput").value,
+    lesson: document.getElementById("lessonInput").value.trim().toUpperCase(),
+    class: document.getElementById("classInput").value.trim().toUpperCase(),
+    date: document.getElementById("dateInput").value,
+    taughtMaterial: document.getElementById("taughtMaterialInput").value.trim(),
+    attentionNotes: document.getElementById("attentionNotesInput").value.trim() || "—",
+    teacherEmail: auth.currentUser.email,
+    teacherName: getTeacherName(auth.currentUser.email),
+    timestamp: new Date().toISOString()
+  };
 
   try {
-    await addDoc(collection(db, "lessons"), {
-      lesson,
-      class: classVal,
-      date,
-      taughtMaterial,
-      attentionNotes: attentionNotes || "—",
-      timestamp: new Date().toISOString()
-    });
-
-    adminMessage.textContent = "Η ύλη καταχωρίστηκε επιτυχώς!";
-    adminMessage.className = "success-message";
-    lessonInput.value = "";
-    classInput.value = "";
-    dateInput.value = "";
-    taughtMaterialInput.value = "";
-    attentionNotesInput.value = "";
+    await addDoc(collection(db, "lessons"), lessonData);
+    showMessage('adminMessage', 'Η ύλη καταχωρίστηκε επιτυχώς!');
+    document.getElementById("taughtMaterialInput").value = '';
+    document.getElementById("attentionNotesInput").value = '';
   } catch (error) {
-    adminMessage.textContent = "Σφάλμα: " + error.message;
-    adminMessage.className = "error-message";
-    console.error("Σφάλμα καταχώρησης:", error);
+    showMessage('adminMessage', `Σφάλμα: ${error.message}`, true);
   }
-});
+}
 
-// View Lessons Function
-viewLessonsBtn.addEventListener("click", async () => {
-  const studentClass = studentClassInput.value.trim().toUpperCase();
-  lessonsContainer.innerHTML = "";
-  guestMessage.textContent = "";
-
-  if (!studentClass) {
-    guestMessage.textContent = "Εισάγετε τμήμα για αναζήτηση";
-    guestMessage.className = "error-message";
-    return;
-  }
+// Προβολή Μαθημάτων
+async function viewLessons() {
+  const school = document.getElementById("schoolInputView").value;
+  const lesson = document.getElementById("lessonFilter").value.trim().toUpperCase();
+  const studentClass = document.getElementById("studentClass").value.trim().toUpperCase();
+  const container = document.getElementById("lessonsContainer");
 
   try {
     const q = query(
       collection(db, "lessons"),
+      where("school", "==", school),
+      where("lesson", "==", lesson),
       where("class", "==", studentClass),
-      orderBy("date", "desc")
+      orderBy("timestamp", "desc")
     );
+    
     const snapshot = await getDocs(q);
+    container.innerHTML = '';
 
     if (snapshot.empty) {
-      guestMessage.textContent = `Δεν βρέθηκε ύλη για το τμήμα ${studentClass}`;
-      guestMessage.className = "info-message";
+      container.innerHTML = '<div class="no-results">Δεν βρέθηκαν καταχωρήσεις.</div>';
       return;
     }
 
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data();
+    // Αντιστοίχιση καθηγητή βάσει σχολείου/μαθήματος/τμήματος
+    const assignedTeacherEmail = TEACHER_ASSIGNMENTS[school]?.[lesson]?.[studentClass];
+    const teacherName = assignedTeacherEmail 
+      ? getTeacherName(assignedTeacherEmail) 
+      : "Καθηγητής";
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
       const card = document.createElement("div");
       card.className = "lesson-card";
       card.innerHTML = `
-        <h4>${data.lesson} - ${data.class} (${data.date})</h4>
+        <h4>${data.lesson} - ${data.class}</h4>
+        <p><strong>Ημερομηνία:</strong> ${new Date(data.date).toLocaleDateString('el-GR')}</p>
         <p><strong>Ύλη:</strong> ${data.taughtMaterial}</p>
-        <p><strong>Προσοχή:</strong> ${data.attentionNotes}</p>
+        <p><strong>Εκπαιδευτικός:</strong> ${teacherName}</p>
       `;
 
-      // Add delete button only for logged-in users
-      if (auth.currentUser) {
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "Διαγραφή";
-        delBtn.className = "delete-btn";
-        delBtn.onclick = async () => {
-          if (confirm("Θέλετε να διαγράψετε αυτή την καταχώρηση ύλης;")) {
-            try {
-              await deleteDoc(doc(db, "lessons", docSnap.id));
-              card.remove();
-              guestMessage.textContent = "Η καταχώρηση διαγράφηκε επιτυχώς!";
-              guestMessage.className = "success-message";
-            } catch (error) {
-              guestMessage.textContent = "Σφάλμα διαγραφής: " + error.message;
-              guestMessage.className = "error-message";
-              console.error("Σφάλμα διαγραφής:", error);
-            }
+      if (auth.currentUser && (auth.currentUser.email === data.teacherEmail || auth.currentUser.email === 'pa.domvros@gmail.com')) {
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "delete-btn";
+        deleteBtn.textContent = "Διαγραφή";
+        deleteBtn.onclick = async () => {
+          if (confirm("Θέλετε να διαγράψετε αυτή την καταχώρηση;")) {
+            await deleteDoc(doc.ref);
+            card.remove();
           }
         };
-        card.appendChild(delBtn);
+        card.appendChild(deleteBtn);
       }
-      lessonsContainer.appendChild(card);
-    });
-  } catch (error) {
-    guestMessage.textContent = "Σφάλμα: " + error.message;
-    guestMessage.className = "error-message";
-    console.error("Σφάλμα φόρτωσης ύλης:", error);
-  }
-});
 
-// Private Notes Functions
-submitPrivateNoteBtn.addEventListener("click", async () => {
-  const lastName = privateLastName.value.trim();
-  const classVal = privateClass.value.trim().toUpperCase();
-  const note = privateNotesInput.value.trim();
-
-  if (!lastName || !classVal || !note) {
-    privateNoteMessage.textContent = "Συμπληρώστε όλα τα πεδία (Επίθετο, Τμήμα, Σημειώσεις)";
-    privateNoteMessage.className = "error-message";
-    return;
-  }
-
-  try {
-    await addDoc(collection(db, "privateNotes"), {
-      lastName,
-      class: classVal,
-      note,
-      timestamp: new Date().toISOString()
+      container.appendChild(card);
     });
 
-    privateNoteMessage.textContent = "Η σημείωση αποθηκεύτηκε επιτυχώς!";
-    privateNoteMessage.className = "success-message";
-    privateLastName.value = "";
-    privateClass.value = "";
-    privateNotesInput.value = "";
-    loadPrivateNotes();
   } catch (error) {
-    privateNoteMessage.textContent = "Σφάλμα: " + error.message;
-    privateNoteMessage.className = "error-message";
-    console.error("Σφάλμα καταχώρησης σημείωσης:", error);
-  }
-});
-
-searchPrivateNotesBtn.addEventListener("click", () => {
-  const lastName = searchLastNameInput.value.trim();
-  const classVal = searchClassInput.value.trim().toUpperCase();
-  loadPrivateNotes(lastName, classVal);
-});
-
-async function loadPrivateNotes(lastName = "", classVal = "") {
-  privateNotesList.innerHTML = "";
-  let q = collection(db, "privateNotes");
-
-  if (lastName && classVal) {
-    q = query(q, 
-      where("lastName", "==", lastName), 
-      where("class", "==", classVal),
-      orderBy("timestamp", "desc")
-    );
-  } else if (lastName) {
-    q = query(q, 
-      where("lastName", "==", lastName),
-      orderBy("timestamp", "desc")
-    );
-  } else if (classVal) {
-    q = query(q, 
-      where("class", "==", classVal),
-      orderBy("timestamp", "desc")
-    );
-  } else {
-    q = query(q, orderBy("timestamp", "desc"));
-  }
-
-  try {
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) {
-      privateNotesList.innerHTML = "<p>Δεν βρέθηκαν σημειώσεις</p>";
-      return;
-    }
-
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      const div = document.createElement("div");
-      div.className = "lesson-card";
-      div.innerHTML = `
-        <p><strong>${data.lastName} (${data.class}):</strong> ${data.note}</p>
-        <small>${new Date(data.timestamp).toLocaleString()}</small>
-      `;
-
-      if (auth.currentUser) {
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "Διαγραφή";
-        delBtn.className = "delete-btn";
-        delBtn.onclick = async () => {
-          if (confirm("Διαγραφή σημείωσης;")) {
-            await deleteDoc(doc(db, "privateNotes", docSnap.id));
-            loadPrivateNotes(lastName, classVal);
-          }
-        };
-        div.appendChild(delBtn);
-      }
-      privateNotesList.appendChild(div);
-    });
-  } catch (error) {
-    privateNotesList.innerHTML = `<p class="error-message">Σφάλμα: ${error.message}</p>`;
-    console.error("Σφάλμα φόρτωσης σημειώσεων:", error);
+    console.error("Σφάλμα:", error);
+    container.innerHTML = '<div class="error-message">Σφάλμα φόρτωσης δεδομένων.</div>';
   }
 }
+
+// Αρχικοποίηση
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dateInput').valueAsDate = new Date();
+  document.getElementById("loginBtn").addEventListener("click", handleLogin);
+  document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+  document.getElementById("submitLessonBtn").addEventListener("click", submitLesson);
+  document.getElementById("viewLessonsBtn").addEventListener("click", viewLessons);
+
+  onAuthStateChanged(auth, (user) => {
+    document.getElementById("loginForm").style.display = user ? "none" : "block";
+    document.getElementById("adminSection").style.display = user ? "block" : "none";
+    document.getElementById("publicView").style.display = "block";
+  });
+});
+
+// Script για ενημέρωση υπαρχουσών καταχωρήσεων (προαιρετικό)
+async function updateExistingLessons() {
+  const snapshot = await getDocs(collection(db, "lessons"));
+  snapshot.forEach(async (doc) => {
+    const data = doc.data();
+    const assignedTeacherEmail = TEACHER_ASSIGNMENTS[data.school]?.[data.lesson]?.[data.class];
+    if (assignedTeacherEmail && (!data.teacherName || data.teacherName === "Καθηγητής")) {
+      await updateDoc(doc.ref, {
+        teacherName: getTeacherName(assignedTeacherEmail)
+      });
+      console.log(`Ενημερώθηκε η καταχώρηση ${doc.id}`);
+    }
+  });
+}
+// updateExistingLessons(); // Ξεσχολιάστε για μια φορά αν χρειάζεται
