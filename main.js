@@ -152,16 +152,26 @@ async function viewLessons() {
       return;
     }
 
-    const assignedTeacherEmail = TEACHER_ASSIGNMENTS[school]?.[lesson]?.[studentClass];
-    const teacherName = assignedTeacherEmail 
-      ? getTeacherName(assignedTeacherEmail) 
-      : "Καθηγητής";
-
     snapshot.forEach(doc => {
       const data = doc.data();
       const card = document.createElement("div");
       card.className = "lesson-card";
       
+      // --- ΕΔΩ ΕΓΙΝΕ Η ΑΛΛΑΓΗ ---
+      let teacherName;
+
+      // 1. Ειδικός έλεγχος αν το μάθημα είναι "ΑΓΓΛΙΚΑ"
+      if (data.lesson.trim().toUpperCase() === 'ΑΓΓΛΙΚΑ') {
+        teacherName = 'Παναγιώτης Δόμβρος';
+      } else {
+        // 2. Αν δεν είναι Αγγλικά, ακολουθείται η κανονική λογική
+        const assignedTeacherEmail = TEACHER_ASSIGNMENTS[data.school]?.[data.lesson]?.[data.class];
+        teacherName = assignedTeacherEmail 
+          ? getTeacherName(assignedTeacherEmail) 
+          : "Καθηγητής";
+      }
+      // --- ΤΕΛΟΣ ΑΛΛΑΓΗΣ ---
+
       card.innerHTML = `
         <h4>${data.lesson} - ${data.class}</h4>
         <p><strong>Ημερομηνία:</strong> ${new Date(data.date).toLocaleDateString('el-GR')}</p>
@@ -207,35 +217,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Script για ενημέρωση υπαρχουσών καταχωρήσεων (προαιρετικό)
-async function updateExistingLessons() {
-  const snapshot = await getDocs(collection(db, "lessons"));
-  snapshot.forEach(async (doc) => {
-    const data = doc.data();
-    const assignedTeacherEmail = TEACHER_ASSIGNMENTS[data.school]?.[data.lesson]?.[data.class];
-    if (assignedTeacherEmail && (!data.teacherName || data.teacherName === "Καθηγητής")) {
-      await updateDoc(doc.ref, {
-        teacherName: getTeacherName(assignedTeacherEmail)
-      });
-      console.log(`Ενημερώθηκε η καταχώρηση ${doc.id}`);
-    }
-  });
-}
-// updateExistingLessons(); // Ξεσχολιάστε για μια φορά αν χρειάζεται
-
 /**
  * Διαγράφει όλες τις καταχωρήσεις ύλης που έγιναν πριν από μια συγκεκριμένη ημερομηνία.
  * ΠΡΟΣΟΧΗ: Αυτή η ενέργεια είναι μη αναστρέψιμη.
  */
 async function deleteOldLessons() {
-  // --- ΟΡΙΣΤΕ ΤΗΝ ΗΜΕΡΟΜΗΝΙΑ-ΟΡΙΟ ΕΔΩ ---
-  // Οποιαδήποτε εγγραφή ΠΡΙΝ από αυτή την ημερομηνία θα διαγραφεί.
-  const CUTOFF_DATE = '2024-09-01T00:00:00.000Z'; // Μορφή: YYYY-MM-DDTHH:mm:ss.sssZ
+  const CUTOFF_DATE = '2024-09-01T00:00:00.000Z'; 
 
-  console.log(`Αναζήτηση για εγγραφές παλαιότερες από ${new Date(CUTOFF_DATE).toLocaleDateString('el-GR')}...`);
-  
   if (!confirm(`Είστε σίγουροι ότι θέλετε να διαγράψετε μόνιμα όλες τις εγγραφές πριν τις ${new Date(CUTOFF_DATE).toLocaleDateString('el-GR')}; Αυτή η ενέργεια ΔΕΝ αναιρείται.`)) {
-    console.log("Η διαγραφή ακυρώθηκε από τον χρήστη.");
     return;
   }
 
@@ -252,15 +241,10 @@ async function deleteOldLessons() {
       return;
     }
 
-    console.log(`Βρέθηκαν ${snapshot.size} εγγραφές για διαγραφή. Έναρξη διαδικασίας...`);
-
-    // Διαγράφουμε κάθε έγγραφο ένα προς ένα
     for (const doc of snapshot.docs) {
-      console.log(`Διαγράφεται η εγγραφή με ID: ${doc.id}`);
       await deleteDoc(doc.ref);
     }
 
-    console.log("Η διαγραφή των παλιών δεδομένων ολοκληρώθηκε επιτυχώς!");
     alert(`Ολοκληρώθηκε η διαγραφή ${snapshot.size} παλιών εγγραφών.`);
 
   } catch (error) {
