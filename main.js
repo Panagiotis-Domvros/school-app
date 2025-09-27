@@ -152,7 +152,6 @@ async function viewLessons() {
       return;
     }
 
-    // Αντιστοίχιση καθηγητή βάσει σχολείου/μαθήματος/τμήματος
     const assignedTeacherEmail = TEACHER_ASSIGNMENTS[school]?.[lesson]?.[studentClass];
     const teacherName = assignedTeacherEmail 
       ? getTeacherName(assignedTeacherEmail) 
@@ -163,7 +162,6 @@ async function viewLessons() {
       const card = document.createElement("div");
       card.className = "lesson-card";
       
-      // --- ΕΔΩ ΕΓΙΝΕ Η ΑΛΛΑΓΗ ---
       card.innerHTML = `
         <h4>${data.lesson} - ${data.class}</h4>
         <p><strong>Ημερομηνία:</strong> ${new Date(data.date).toLocaleDateString('el-GR')}</p>
@@ -171,7 +169,6 @@ async function viewLessons() {
         <p><strong>Σημειώσεις για μαθητές:</strong> ${data.attentionNotes || '—'}</p>
         <p><strong>Εκπαιδευτικός:</strong> ${teacherName}</p>
       `;
-      // --- ΤΕΛΟΣ ΑΛΛΑΓΗΣ ---
 
       if (auth.currentUser && (auth.currentUser.email === data.teacherEmail || auth.currentUser.email === 'pa.domvros@gmail.com')) {
         const deleteBtn = document.createElement("button");
@@ -225,3 +222,49 @@ async function updateExistingLessons() {
   });
 }
 // updateExistingLessons(); // Ξεσχολιάστε για μια φορά αν χρειάζεται
+
+/**
+ * Διαγράφει όλες τις καταχωρήσεις ύλης που έγιναν πριν από μια συγκεκριμένη ημερομηνία.
+ * ΠΡΟΣΟΧΗ: Αυτή η ενέργεια είναι μη αναστρέψιμη.
+ */
+async function deleteOldLessons() {
+  // --- ΟΡΙΣΤΕ ΤΗΝ ΗΜΕΡΟΜΗΝΙΑ-ΟΡΙΟ ΕΔΩ ---
+  // Οποιαδήποτε εγγραφή ΠΡΙΝ από αυτή την ημερομηνία θα διαγραφεί.
+  const CUTOFF_DATE = '2024-09-01T00:00:00.000Z'; // Μορφή: YYYY-MM-DDTHH:mm:ss.sssZ
+
+  console.log(`Αναζήτηση για εγγραφές παλαιότερες από ${new Date(CUTOFF_DATE).toLocaleDateString('el-GR')}...`);
+  
+  if (!confirm(`Είστε σίγουροι ότι θέλετε να διαγράψετε μόνιμα όλες τις εγγραφές πριν τις ${new Date(CUTOFF_DATE).toLocaleDateString('el-GR')}; Αυτή η ενέργεια ΔΕΝ αναιρείται.`)) {
+    console.log("Η διαγραφή ακυρώθηκε από τον χρήστη.");
+    return;
+  }
+
+  try {
+    const q = query(
+      collection(db, "lessons"),
+      where("timestamp", "<", CUTOFF_DATE)
+    );
+    
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      console.log("Δεν βρέθηκαν παλιές εγγραφές για διαγραφή.");
+      return;
+    }
+
+    console.log(`Βρέθηκαν ${snapshot.size} εγγραφές για διαγραφή. Έναρξη διαδικασίας...`);
+
+    // Διαγράφουμε κάθε έγγραφο ένα προς ένα
+    for (const doc of snapshot.docs) {
+      console.log(`Διαγράφεται η εγγραφή με ID: ${doc.id}`);
+      await deleteDoc(doc.ref);
+    }
+
+    console.log("Η διαγραφή των παλιών δεδομένων ολοκληρώθηκε επιτυχώς!");
+    alert(`Ολοκληρώθηκε η διαγραφή ${snapshot.size} παλιών εγγραφών.`);
+
+  } catch (error) {
+    console.error("Σφάλμα κατά τη διαγραφή παλιών δεδομένων:", error);
+    alert("Προέκυψε σφάλμα κατά τη διαγραφή. Ελέγξτε την κονσόλα για λεπτομέρειες.");
+  }
+}
