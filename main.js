@@ -162,12 +162,16 @@ async function viewLessons() {
       const data = doc.data();
       const card = document.createElement("div");
       card.className = "lesson-card";
+      
+      // --- ΕΔΩ ΕΓΙΝΕ Η ΑΛΛΑΓΗ ---
       card.innerHTML = `
         <h4>${data.lesson} - ${data.class}</h4>
         <p><strong>Ημερομηνία:</strong> ${new Date(data.date).toLocaleDateString('el-GR')}</p>
-        <p><strong>Ύλη:</strong> ${data.taughtMaterial}</p>
+        <p><strong>Ύλη που διδάχθηκε:</strong> ${data.taughtMaterial}</p>
+        <p><strong>Σημειώσεις για μαθητές:</strong> ${data.attentionNotes || '—'}</p>
         <p><strong>Εκπαιδευτικός:</strong> ${teacherName}</p>
       `;
+      // --- ΤΕΛΟΣ ΑΛΛΑΓΗΣ ---
 
       if (auth.currentUser && (auth.currentUser.email === data.teacherEmail || auth.currentUser.email === 'pa.domvros@gmail.com')) {
         const deleteBtn = document.createElement("button");
