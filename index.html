@@ -2,119 +2,986 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Καταχώριση Ύλης</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1ο Γυμνάσιο Πυλαίας - Πρόγραμμα Εξετάσεων 2026</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700;900&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
-    .header-container {
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body { 
+      margin: 0; 
+      font-family: Arial, sans-serif; 
+      background-color: #f4f6f8; 
+      color: #333; 
+      line-height: 1.5; 
+      font-size: 1.3em; 
+    }
+    
+    header {
+      background-color: #f4f6f8; 
+      padding: 15px 10px; 
       text-align: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid #D4AF37;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
+      border-bottom: 1px solid #cbd5e1; 
+      font-family: 'Noto Sans', Arial, sans-serif; 
+      font-size: 16px; 
     }
-    .app-title {
-      color: #008080;
-      font-size: 28px;
-      margin-bottom: 5px;
+    header img {
+      width: 45px; 
+      margin: 0 auto 5px; 
+      display: block;
     }
-    .creator-info {
-      color: #555;
-      font-size: 16px;
-      margin-bottom: 10px;
+    header h1 {
+      font-size: 1.35em; 
+      color: #005f5f;
+      margin: 0 0 6px;
+      font-weight: 700;
     }
-    .guide-link {
-      display: inline-block;
-      background-color: #008080;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 4px;
-      text-decoration: none;
-      font-size: 14px;
+    .school-info {
+      font-size: 0.9em;
+      color: #004d4d;
+      line-height: 1.4;
+    }
+    .school-info p { margin: 3px 0; }
+    .school-info a { color: #004d4d; text-decoration: none;} 
+    
+    .contact-line {
+      display: block;
       margin-top: 5px;
+      font-size: clamp(11px, 2.5vw, 15px); 
     }
-    .guide-link:hover {
-      background-color: #006666;
+
+    .container { 
+      max-width: 800px; 
+      margin: 30px auto; 
+      background-color: rgba(255, 255, 255, 0.95); 
+      padding: 25px; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+    }
+    h1, h2, h3, h4 { 
+      text-align: center; 
+      margin: 10px 0; 
+      line-height: 1.3;
+    }
+    
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch; 
+      margin: 20px 0;
+    }
+    
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      font-size: 0.95rem; 
+      background-color: white; 
+      min-width: 500px; 
+    }
+    th, td { 
+      border: 1px solid #ccc; 
+      padding: 10px 8px; 
+      text-align: center; 
+    }
+    th {
+      background-color: #f8fafc;
+      font-weight: bold;
+    }
+    
+    .btn-group { 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: space-between; 
+      margin: 20px 0; 
+      gap: 8px; 
+    }
+    .btn, .link-btn { 
+      flex: 1 1 calc(33.333% - 8px); 
+      padding: 12px; 
+      background-color: #fff; 
+      border: 1px solid #cbd5e1; 
+      border-radius: 8px; 
+      text-align: center; 
+      cursor: pointer; 
+      font-size: 1rem;
+      text-decoration: none; 
+      color: #333;
+      min-height: 55px; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent; 
+    }
+    .btn:hover, .link-btn:hover {
+      background-color: #f1f5f9;
+      border-color: #94a3b8;
+    }
+    .link-btn { 
+      background-color: #e2e8f0; 
+      border-color: #cbd5e1;
+    }
+    .modal { 
+      display: none; 
+      position: fixed; 
+      z-index: 1000; 
+      left: 0; 
+      top: 0; 
+      width: 100%; 
+      height: 100%; 
+      overflow: auto; 
+      background-color: rgba(15, 23, 42, 0.6); 
+      backdrop-filter: blur(4px);
+    }
+    .modal-content { 
+      background-color: #ffffff; 
+      margin: 5% auto; 
+      padding: 25px; 
+      border: none; 
+      width: 92%; 
+      max-width: 650px; 
+      border-radius: 12px; 
+      position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); 
+    }
+    .close { 
+      position: absolute; 
+      right: 15px; 
+      top: 15px; 
+      font-size: 1.5rem; 
+      cursor: pointer; 
+      color: #ef4444;
+      background: #fee2e2;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .close:hover {
+      background: #ef4444;
+      color: white;
+    }
+    footer { 
+      text-align: center; 
+      margin-top: 40px; 
+      padding: 20px 15px;
+      font-size: 0.85rem; 
+      color: #64748b;
+      border-top: 1px solid #cbd5e1;
+      line-height: 1.5;
+    }
+    
+    tr:nth-child(1),  
+    tr:nth-child(3),  
+    tr:nth-child(6),  
+    tr:nth-child(7),  
+    tr:nth-child(8),  
+    tr:nth-child(9),  
+    tr:nth-child(10) { 
+      font-weight: bold;
+    }
+    
+    .exam-times {
+      font-style: italic;
+      color: #dc2626;
+      text-align: center;
+      margin-top: -5px;
+    }
+    
+    .presentation-text {
+      font-style: italic;
+      text-align: center;
+      margin-top: 35px;
+    }
+    
+    .presentation-btn {
+      font-weight: bold;
+      color: #0369a1;
+      background-color: #e0f2fe;
+      border-color: #bae6fd;
+      margin: 0 auto;
+      max-width: 400px;
+    }
+    .presentation-btn:hover {
+      background-color: #bae6fd;
+    }
+    
+    @media (max-width: 768px) {
+      .btn, .link-btn {
+        flex: 1 1 calc(50% - 8px); 
+      }
+    }
+
+    @media (max-width: 600px) { 
+      body {
+        font-size: 1.05em; 
+      }
+      header {
+        padding: 12px 10px;
+      }
+      header img {
+        width: 35px;
+      }
+      header h1 {
+        font-size: 1.15em;
+      }
+      .school-info {
+        font-size: 0.8em;
+      }
+      .contact-line {
+        white-space: normal; 
+      }
+      .container {
+        margin: 10px;
+        padding: 15px;
+        border-radius: 8px;
+      }
+      h2 { font-size: 1.3em; }
+      h3 { font-size: 1.15em; }
+      
+      .btn, .link-btn { 
+        flex: 1 1 100%; 
+        font-size: 1.05rem;
+        padding: 15px 10px;
+      } 
+      .modal-content {
+        padding: 20px 15px;
+        margin: 10% auto;
+      }
+      .close {
+        right: 10px;
+        top: 10px;
+        width: 30px;
+        height: 30px;
+        font-size: 1.2rem;
+      }
+      th, td { 
+        padding: 8px 4px; 
+        font-size: 0.85rem; 
+      }
     }
   </style>
 </head>
 <body>
+
+  <header>
+    <img src="Greek coat of arms.png" alt="Εθνόσημο">
+    <h1>1ο Ημερήσιο Γυμνάσιο Πυλαίας Θεσσαλονίκης</h1>
+    <div class="school-info">
+      <p><strong>Διεύθυνση:</strong> Ισμήνης 4, Πυλαία – 55535 &nbsp;|&nbsp; <strong>Διευθυντής:</strong> Παναγιώτης Δόμβρος</p>
+      
+      <div class="contact-line">
+        <strong>Email:</strong> <a href="mailto:mail@1gym-pylaias.thess.sch.gr">mail@1gym-pylaias.thess.sch.gr</a> &nbsp;|&nbsp;
+        <strong>Τηλέφωνο:</strong> 2311226437 &nbsp;|&nbsp;
+        <strong>Ιστοσελίδα:</strong> <a href="https://1gym-pylaias.thess.sch.gr/" target="_blank">1gym-pylaias.thess.sch.gr</a>
+      </div>
+    </div>
+  </header>
+
   <div class="container">
-    <div class="header-container">
-      <h1 class="app-title">Καταχωρίσεις Ύλης</h1>
-      <div class="creator-info">Δημιουργία: Παναγιώτης Δόμβρος - Διευθυντής 1ου Γυμνασίου Πυλαίας, All rights reserved 2025-26</div>
-      <a href="https://panagiotis-domvros.github.io/school-app-guide/" class="guide-link" target="_blank" rel="noopener noreferrer">Οδηγός Χρήσης Εφαρμογής</a>
+    <h2>Ύλη Γραπτών εξετάσεων Ιουνίου 2026</h2>
+    <h3>Πρόγραμμα Εξετάσεων</h3>
+    
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr><th>Ημέρα/Ημ/νία</th><th>Αʼ Κύκλος</th><th>Βʼ Κύκλος</th><th>Γʼ Κύκλος</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Τρίτη<br>2-6-2026</td><td>Αρχαία Α-Β</td><td>Αρχαία Γ</td><td>—</td></tr>
+          <tr><td>Τετάρτη<br>3-6-2026</td><td colspan="3">ΠΑΝΕΛΛΑΔΙΚΕΣ ΕΞΕΤΑΣΕΙΣ</td></tr>
+          <tr><td>Πέμπτη<br>4-6-2026</td><td>Ιστορία Α-Β</td><td>Βιολογία Γ</td><td>—</td></tr>
+          <tr><td>Παρασκευή<br>5-6-2026</td><td colspan="3">ΠΑΝΕΛΛΑΔΙΚΕΣ ΕΞΕΤΑΣΕΙΣ</td></tr>
+          <tr><td>Δευτέρα<br>8-6-2026</td><td colspan="3">ΠΑΝΕΛΛΑΔΙΚΕΣ ΕΞΕΤΑΣΕΙΣ</td></tr>
+          <tr><td>Τρίτη<br>9-6-2026</td><td>Βιολογία Α</td><td>Φυσική Γ<p>Βιολογία B</p></td><td>—</td></tr>
+          <tr><td>Τετάρτη<br>10-6-2026</td><td>Αγγλικά Α</td><td>Αγγλικά Γ </td><td>Αγγλικά Β </td></tr>
+          <tr><td>Πέμπτη<br>11-6-2026</td><td>Νέα Α-Β</td><td>Νέα Γ</td><td>—</td></tr>
+          <tr><td>Παρασκευή<br>12-6-2026</td><td>Φυσική Α-Β</td><td>Ιστορία Γ</td><td>—</td></tr>
+          <tr><td>Δευτέρα<br>15-6-2026</td><td>Μαθηματικά Α-Β</td><td>Μαθηματικά Γ</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="exam-times">
+      <p><strong>
+        <span style="font-size: 75%">
+          Αʼ Κύκλος: 8.10-10.10 (προσέλευση 8.00)<br>
+          Βʼ Κύκλος: 10.20-12.20 (προσέλευση 10.10)<br>
+          Γʼ Κύκλος: 12.30-14.30 (προσέλευση 12.10)<br>
+          Στις τρίωρες εξετάσεις: Αʼ 8.10-11.10, Βʼ 11.20-14.20
+        </span>
+      </strong></p>
     </div>
 
-    <!-- Φόρμα Σύνδεσης -->
-    <div id="loginForm">
-      <label for="email">Email:</label>
-      <input type="text" id="email" placeholder="π.χ. john.doe@example.com">
-      <label for="password">Κωδικός:</label>
-      <input type="password" id="password" placeholder="••••••••">
-      <button type="button" id="loginBtn">Σύνδεση Εκπαιδευτικού</button>
-      <p id="loginError" class="error-message"></p>
+    <h3>Α' Γυμνασίου</h3>
+    <div class="btn-group" data-group="A">
+      <div class="btn" data-subject="Αρχαία Πρωτότυπο">Αρχαία Πρωτότυπο</div>
+      <div class="btn" data-subject="Αρχαία Λογοτεχνία">Αρχαία Λογοτεχνία</div>
+      <div class="btn" data-subject="Νέα (Γλώσσα)">Νέα (Γλώσσα)</div>
+      <div class="btn" data-subject="Νέα (Λογοτεχνία)">Νέα (Λογοτεχνία)</div>
+      <div class="btn" data-subject="Ιστορία">Ιστορία</div>
+      <div class="btn" data-subject="Φυσική">Φυσική</div>
+      <div class="btn" data-subject="Βιολογία">Βιολογία</div>
+      <div class="btn" data-subject="Μαθηματικά">Μαθηματικά</div>
+      <div class="btn" data-subject="Αγγλικά">Αγγλικά</div>
     </div>
-
-    <!-- Διαχειριστική Ζώνη -->
-    <div id="adminSection" style="display:none;">
-      <!-- Καταχώριση Ύλης -->
-      <div class="form-section">
-        <h3>Καταχώριση Ύλης</h3>
-        <label for="schoolInput">Σχολείο:</label>
-        <select id="schoolInput" required>
-          <option value="" disabled selected>Επιλέξτε σχολείο</option>
-          <option value="1st_gymnasio_pylaias">1ο Γυμνάσιο Πυλαίας</option>
-          <option value="gymnasio_epanomis">Γυμνάσιο Επανομής</option>
-        </select>
-        
-        <label for="lessonInput">Μάθημα:</label>
-        <input type="text" id="lessonInput" required placeholder="π.χ. ΙΣΤΟΡΙΑ">
-        
-        <label for="classInput">Τμήμα:</label>
-        <input type="text" id="classInput" required placeholder="π.χ. Γ5">
-        <p class="capitalize-hint">(Θα μετατραπούν αυτόματα σε ΚΕΦΑΛΑΙΑ)</p>
-        
-        <label for="dateInput">Ημερομηνία:</label>
-        <input type="date" id="dateInput" required>
-        
-        <label for="taughtMaterialInput">Ύλη που διδάχθηκε:</label>
-        <textarea id="taughtMaterialInput" required rows="4" placeholder="Περιγράψτε την ύλη..."></textarea>
-        
-        <label for="attentionNotesInput">Σημειώσεις για μαθητές:</label>
-        <textarea id="attentionNotesInput" rows="3" placeholder="Τι πρέπει να προσέξουν..."></textarea>
-        
-        <button type="button" id="submitLessonBtn">Καταχώριση Ύλης</button>
-        <p id="adminMessage" class="success-message"></p>
-      </div>
-
-      <div class="action-buttons">
-        <button type="button" id="logoutBtn">Αποσύνδεση</button>
-      </div>
+    
+    <h3>Β' Γυμνασίου</h3>
+    <div class="btn-group" data-group="B">
+      <div class="btn" data-subject="Αρχαία Πρωτότυπο">Αρχαία Πρωτότυπο</div>
+      <div class="btn" data-subject="Αρχαία Λογοτεχνία">Αρχαία Λογοτεχνία</div>
+      <div class="btn" data-subject="Νέα (Γλώσσα)">Νέα (Γλώσσα)</div>
+      <div class="btn" data-subject="Νέα (Λογοτεχνία)">Νέα (Λογοτεχνία)</div>
+      <div class="btn" data-subject="Ιστορία">Ιστορία</div>
+      <div class="btn" data-subject="Φυσική">Φυσική</div>
+      <div class="btn" data-subject="Βιολογία">Βιολογία</div>
+      <div class="btn" data-subject="Μαθηματικά">Μαθηματικά</div>
+      <div class="btn" data-subject="Αγγλικά">Αγγλικά</div>
     </div>
+    
+    <h3>Γ' Γυμνασίου</h3>
+    <div class="btn-group" data-group="Γ">
+      <div class="btn" data-subject="Αρχαία Πρωτότυπο">Αρχαία Πρωτότυπο</div>
+      <div class="btn" data-subject="Αρχαία Λογοτεχνία">Αρχαία Λογοτεχνία</div>
+      <div class="btn" data-subject="Νέα (Γλώσσα)">Νέα (Γλώσσα)</div>
+      <div class="btn" data-subject="Νέα (Λογοτεχνία)">Νέα (Λογοτεχνία)</div>
+      <div class="btn" data-subject="Ιστορία">Ιστορία</div>
+      <div class="btn" data-subject="Φυσική">Φυσική</div>
+      <div class="btn" data-subject="Βιολογία">Βιολογία</div>
+      <div class="btn" data-subject="Μαθηματικά">Μαθηματικά</div>
+      <div class="btn" data-subject="Αγγλικά">Αγγλικά</div>
+    </div>
+    
+    <p class="presentation-text">Στον παρακάτω σύνδεσμο θα βρείτε την παρουσίαση του Διευθυντή για τις εξετάσεις:</p>
+    <a class="link-btn presentation-btn" href="https://domvros-administration.github.io/exam-types/" target="_blank">Παρουσίαση Γραπτών Εξετάσεων</a>
+    
+  </div>
 
-    <!-- Προβολή Ύλης (Ορατή σε όλους) -->
-    <div id="publicView">
-      <h3>Προβολή Ύλης</h3>
-      <div class="search-filters">
-        <label for="schoolInputView">Σχολείο:</label>
-        <select id="schoolInputView" required>
-          <option value="" disabled selected>Επιλέξτε σχολείο</option>
-          <option value="1st_gymnasio_pylaias">1ο Γυμνάσιο Πυλαίας</option>
-          <option value="gymnasio_epanomis">Γυμνάσιο Επανομής</option>
-        </select>
-        
-        <label for="lessonFilter">Μάθημα:</label>
-        <input type="text" id="lessonFilter" required placeholder="π.χ. ΙΣΤΟΡΙΑ">
-        
-        <label for="studentClass">Τμήμα:</label>
-        <input type="text" id="studentClass" required placeholder="π.χ. Γ5">
-        
-        <button type="button" id="viewLessonsBtn">Προβολή Ύλης</button>
-      </div>
-      <div id="lessonsContainer"></div>
+  <footer>
+    Δημιουργία: Παναγιώτης Δόμβρος, Εκπαιδευτικός Αγγλικής Γλώσσας - Θεατρολόγος, Επιμορφωτής, Διευθυντής 1ου Γυμνασίου Πυλαίας
+  </footer>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="modal-close">&times;</span>
+      <h4 id="modal-title"></h4>
+      <div id="modal-body"></div>
     </div>
   </div>
 
-  <script type="module" src="main.js"></script>
+  <script>
+    const modal = document.getElementById('modal');
+    const titleEl = document.getElementById('modal-title');
+    const bodyEl = document.getElementById('modal-body');
+    const closeBtn = document.getElementById('modal-close');
+    const contentMap = {
+      'A|Μαθηματικά': `
+        <h4>Ύλη Μαθηματικών Αʼ Γυμνασίου</h4>
+        <p><strong>Αʼ Μέρος (Άλγεβρα):</strong><br>
+<p>Κεφάλαιο 2ο - Οι παράγραφοι: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6</p>
+<p>Κεφάλαιο 5ο - Οι παράγραφοι: 5.1, 5.2</p>
+<p>Κεφάλαιο 7ο - Οι παράγραφοι:7.1, 7.2, 7.3, 7.4, 7.5, 7.6</p>
+        <p><strong>Βʼ Μέρος (Γεωμετρία):</strong><br>
+        <p>Κεφάλαιο 1ο - Οι παράγραφοι: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.11 </p> 
+<p>Κεφάλαιο 2ο - Οι παράγραφοι: 2.6</p>
+<p>Κεφάλαιο 3ο - Οι παράγραφοι: 3.1, 3.2</p>
+
+        <p><em>Βασιλειάδου Μαρία, Λαφαζάνης Ανδρέας</em></p>
+      `,  
+      'B|Μαθηματικά': `
+        <h4>Ύλη Μαθηματικών Βʼ Γυμνασίου</h4>
+        <p><strong>Αʼ Μέρος – Άλγεβρα:</strong> <br>
+<p>Κεφ.1: 1.1 ,1.2</p>
+        Κεφ.2: 2.1, 2.2</p>
+        <p><strong>Βʼ Μέρος – Γεωμετρία:</strong> <br>
+<p>Κεφ.1: 1.2, 1.3, 1.4</p>
+        Κεφ.2: 2.1, 2.2</p>
+        Κεφ.3: 3.1, 3.3, 3.5</p>
+        <p><em>Κοκκίνη Ελένη, Μπόνου Σοφία</em></p>
+      `,  
+      'Γ|Μαθηματικά': `
+        <h4>Ύλη Μαθηματικών Γʼ Γυμνασίου</h4>
+        <p><strong>Αʼ Μέρος – Άλγεβρα:</strong><br>
+<p>Κεφάλαιο 1 - Οι παράγραφοι: 1.2, 1.3, 1.4, 1.5, 1.6, 1.8, 1.9, 1.10 </p>
+<p>Κεφάλαιο 2 - Οι παράγραφοι: 2.1, 2.2</p>
+<p>Κεφάλαιο 3 - Οι παράγραφοι: 3.2, 3.3</p>
+
+        <p><strong>Βʼ Μέρος – Γεωμετρία:</strong> <br>
+        <p>Κεφάλαιο 1 - Οι παράγραφοι: 1.1, 1.3</p>
+<p><em>Κοκκίνη Ελένη, Μπόνου Σοφία</em></p>
+      `,
+'A|Φυσική': `
+  <h4>ΕΞΕΤΑΣΤΕΑ ΥΛΗ ΦΥΣΙΚΗΣ Α’ ΓΥΜΝΑΣΙΟΥ 2025-2026</h4>
+  <p><strong>ΕΝΤΟΣ ΥΛΗΣ</strong></p>
+  <ul>
+    <li>ΦΥΛΛΟ ΕΡΓΑΣΙΑΣ 3 – ΜΕΤΡΗΣΗ ΜΑΖΑΣ – ΤΑ ΔΙΑΓΡΑΜΜΑΤΑ</li>
+    <li>ΦΥΛΛΟ ΕΡΓΑΣΙΑΣ 4 – ΜΕΤΡΗΣΗ ΘΕΡΜΟΚΡΑΣΙΑΣ – Η ΒΑΘΜΟΝΟΜΗΣΗ</li>
+    <li>ΦΥΛΛΟ ΕΡΓΑΣΙΑΣ 5 – ΑΠΟ ΤΗΝ ΘΕΡΜΟΤΗΤΑ ΣΤΗΝ ΘΕΡΜΟΚΡΑΣΙΑ-Η ΘΕΡΜΙΚΗ ΙΣΟΡΡΟΠΙΑ</li>
+    <li>ΜΕΤΡΗΣΗ ΟΓΚΟΥ – ΥΓΡΟΥ ΚΑΙ ΣΤΕΡΕΟΥ ΣΩΜΑΤΟΣ</li>
+    <li>ΠΥΚΝΟΤΗΤΑ – ΥΠΟΛΟΓΙΣΜΟΣ ΠΥΚΝΟΤΗΤΑΣ ΣΤΕΡΕΟΥ – ΥΓΡΟΥ ΣΩΜΑΤΟΣ<br>
+    (ΑΠΟ ΤΗΝ ΘΕΩΡΙΑ ΣΤΑ ΕΓΓΡΑΦΑ ΣΤΟ E-CLASS ή τον νέο εργαστηριακό οδηγό της Β’ ΓΥΜΝΑΣΙΟΥ εργαστηριακές ασκήσεις 3-4 ή ότι άλλο υλικό σας έχει δοθεί από τον καθηγητή)</li>
+  </ul>
+  <p>Ότι ασκήσεις-ερωτήσεις έχουν γίνει από το βιβλίο ή στην e-class ή από φυλλάδια, ή ότι σημειώσεις έχουν γραφτεί στο τετράδιο ή στην e-class για τα παραπάνω κεφάλαια θα διαβαστούν.</p>
+  
+  <p><strong>ΕΚΤΟΣ ΥΛΗΣ</strong></p>
+  <ul>
+    <li>ΦΥΛΛΟ ΕΡΓΑΣΙΑΣ 1 – ΜΕΤΡΗΣΗ ΜΗΚΟΥΣ</li>
+    <li>ΦΥΛΛΟ ΕΡΓΑΣΙΑΣ 2 – ΜΕΤΡΗΣΗ ΧΡΟΝΟΥ</li>
+    <li>ΦΥΛΛΟ ΕΡΓΑΣΙΑΣ 10 – ΒΡΑΧΥΚΥΚΛΩΜΑ (για όσα τμήματα το έχουν κάνει)</li>
+  </ul>
+  
+  <p><em>Η ΕΙΣΗΓΗΤΕΣ<br>ΑΙΚΑΤΕΡΙΝΗ ΚΑΛΙΤΣΗ, ΑΝΔΡΕΑΣ ΛΑΦΑΖΑΝΗΣ</em></p>
+`,
+
+      'A|Βιολογία': `
+<h4>Ύλη Βιολογίας Α΄ Γυμνασίου</h4>
+  <p><strong>Κεφάλαιο 1ο: Η οργάνωση της ζωής</strong></p>
+  <ul>
+    <li>1.1 Τα χαρακτηριστικά των οργανισμών (επιγραμματικά)</li>
+    <li>1.2 Κύτταρο: η μονάδα της ζωής (όλο)</li>
+  </ul>
+
+  <p><strong>Κεφάλαιο 2ο: Πρόσληψη ουσιών και πέψη</strong></p>
+  <ul>
+    <li>Εισαγωγή (σελ. 38)</li>
+    <li>2.1 Η παραγωγή θρεπτικών ουσιών στα φυτά - Η φωτοσύνθεση (όλο)</li>
+    <li>2.2 Η πρόσληψη ουσιών και η πέψη στους μονοκύτταρους οργανισμούς (όλο)</li>
+    <li>2.4 Η πρόσληψη ουσιών και η πέψη στον άνθρωπο (μόνο σελ. 48-51)</li>
+  </ul>
+
+  <p><strong>Κεφάλαιο 3ο: Μεταφορά και αποβολή ουσιών</strong></p>
+  <ul>
+    <li>Εισαγωγή</li>
+    <li>3.1 Μεταφορά και αποβολή ουσιών στους μονοκύτταρους οργανισμούς (όλο)</li>
+    <li>3.2 Μεταφορά και αποβολή ουσιών στα φυτά (όλο)</li>
+    <li>3.4 Μεταφορά και αποβολή ουσιών στον άνθρωπο (ως και την παράγραφο «Το αίμα»)</li>
+  </ul>
+
+  <p><em>Διδάσκουσα: Συροπούλου Ελεάνα</em></p>
+
+`,
+
+      'B|Βιολογία': `
+<h4>Ύλη Βιολογίας Β΄ Γυμνασίου</h4>
+
+  <p><strong>Από το βιβλίο της Α΄ και Β΄ Γυμνασίου</strong></p>
+  <p><strong>Κεφάλαιο 5ο: Στήριξη και κίνηση</strong></p>
+  <ul>
+    <li>5.3 Η στήριξη και η κίνηση στους ζωικούς οργανισμούς (μόνο σελ. 99 και 102)</li>
+    <li>5.4 Το μυοσκελετικό σύστημα του ανθρώπου (μόνο σελ. 106-107)</li>
+  </ul>
+
+  <p><strong>Κεφάλαιο 6ο: Αναπαραγωγή</strong></p>
+  <ul>
+    <li>Εισαγωγή</li>
+    <li>6.2 Η αναπαραγωγή στα φυτά (μόνο σελ. 116 και 117)</li>
+    <li>6.3 Η αναπαραγωγή στους ζωικούς οργανισμούς (μόνο σελ. 119)</li>
+    <li>6.4 Η αναπαραγωγή στον άνθρωπο (όλο, όχι τα ροζ ένθετα)</li>
+  </ul>
+
+  <p><strong>Από το βιβλίο της Β΄ και Γ΄ Γυμνασίου</strong></p>
+  <p><strong>Κεφάλαιο 1ο: Οργάνωση της ζωής - βιολογικά συστήματα</strong></p>
+  <ul>
+    <li>1.2 Κύτταρο: η μονάδα της ζωής (από το τετράδιο)</li>
+  </ul>
+
+  <p><strong>Κεφάλαιο 4ο: Οι ασθένειες και οι παράγοντες που σχετίζονται με την εμφάνισή τους</strong></p>
+  <ul>
+    <li>4.1 Ομοιόσταση (ορισμός ομοιόστασης και παραδείγματα)</li>
+    <li>4.2 Ασθένειες (σελ. 78-80)</li>
+  </ul>
+
+  <p><em>Διδάσκουσα: Συροπούλου Ελεάνα</em></p>
+
+`,
+
+     'Γ|Βιολογία': `
+<h4>Ύλη Βιολογίας Γ΄ Γυμνασίου</h4>
+
+  <p><strong>Κεφάλαιο 1ο: Η οργάνωση της ζωής - Βιολογικά Συστήματα</strong></p>
+  <ul>
+    <li>1.1 Τα μόρια της ζωής (μόνο την παράγραφο «Οργανικές ενώσεις»: ποιες είναι (ορισμός), δομή και ρόλος καθεμίας)</li>
+    <li>1.2 Κύτταρο: η μονάδα της ζωής (διαφορά ευκαρυωτικών - προκαρυωτικών, ποια οργανίδια βρίσκω σε ευκαρυωτικά και ποια σε προκαρυωτικά)</li>
+  </ul>
+
+  <p><strong>Κεφάλαιο 2ο</strong></p>
+  <ul>
+    <li>2.2 Οργάνωση και λειτουργίες του οικοσυστήματος - Ο ρόλος της ενέργειας (όχι τις τροφικές πυραμίδες)</li>
+  </ul>
+
+  <p><strong>Κεφάλαιο 5ο: Διατήρηση και συνέχεια της ζωής</strong></p>
+  <ul>
+    <li>5.1 Το γενετικό υλικό οργανώνεται σε χρωμοσώματα (ορισμοί, περιγραφή εικόνας καρυότυπου)</li>
+    <li>5.2 Η ροή της γενετικής πληροφορίας (μόνο την παράγραφο «Η δομή των νουκλεϊκών οξέων - Αποθήκευση της γενετικής πληροφορίας»)</li>
+    <li>5.4 Κυτταρική διαίρεση (εικόνες μίτωσης και μείωσης και τις διαφορές τους)</li>
+    <li>5.5 Κληρονομικότητα (ικανότητα πραγματοποίησης διασταυρώσεων και υπολογισμού πιθανότητας παιδιού με συγκεκριμένο φαινότυπο)</li>
+  </ul>
+
+  <p><em>Διδάσκουσα: Συροπούλου Ελεάνα</em></p>
+
+`,
+
+      'A|Ιστορία': `
+        <h4>Ύλη Ιστορίας Α' Γυμνασίου</h4>
+        <p><strong>ΚΕΦΑΛΑΙΟ Β': Η ΕΠΟΧΗ ΤΟΥ ΧΑΛΚΟΥ</strong></p>
+        <ul>
+          <li>Ο Κυκλαδικός Πολιτισμός</li>
+          <li>Ο Μινωικός Πολιτισμός</li>
+          <li>Η θρησκεία και η τέχνη των Μινωιτών</li>
+          <li>Ο Μυκηναϊκός κόσμος</li>
+          <li>Η Μυκηναϊκή θρησκεία και τέχνη</li>
+        </ul>
+        
+        <p><strong>ΚΕΦΑΛΑΙΟ Δ': ΑΡΧΑΪΚΗ ΕΠΟΧΗ (800-479 π.Χ.)</strong></p>
+        <ul>
+          <li>Αποικιακή εξάπλωση</li>
+          <li>Η πόλη-κράτος και η εξέλιξη του πολιτεύματος</li>
+          <li>Η Σπάρτη</li>
+          <li>Αθήνα: Από τη Βασιλεία στην Αριστοκρατία</li>
+          <li>Αθήνα: πορεία προς τη Δημοκρατία</li>
+          <li>ΠΕΡΣΕΣ ΚΑΙ ΕΛΛΗΝΕΣ: Δύο κόσμοι συγκρούονται</li>
+          <li>Η οριστική απομάκρυνση της περσικής επίθεσης</li>
+          <li>Η Τέχνη</li>
+        </ul>
+        
+        <p><strong>ΚΕΦΑΛΑΙΟ Ε': Η ΗΓΕΜΟΝΙΑ ΤΗΣ ΑΘΗΝΑΣ (479-431 π.Χ.)</strong></p>
+        <ul>
+          <li>Η Συμμαχία της Δήλου - Η Συμμαχία όργανο της Αθηναϊκής Ηγεμονίας</li>
+          <li>Το δημοκρατικό πολίτευμα σταθεροποιείται - Ο Περικλής και το δημοκρατικό πολίτευμα</li>
+          <li>Η λειτουργία του πολιτεύματος - Οι Λειτουργίες</li>
+         </ul>
+        
+        <p><strong>ΚΕΦΑΛΑΙΟ ΣΤ': ΗΓΕΜΟΝΙΚΟΙ ΑΝΤΑΓΩΝΙΣΜΟΙ ΚΑΙ ΚΑΜΨΗ ΤΩΝ ΕΛΛΗΝΙΚΩΝ ΠΟΛΕΩΝ (431-362 π.Χ.)</strong></p>
+        <ul>
+          <li>Τα αίτια και οι αφορμές του Πελοποννησιακού πολέμου</li>
+        </ul>
+        
+        <p><strong>ΚΕФΑΛΑΙΟ Ζ': Η ΑΝΑΠΤΥΞΗ ΤΗΣ ΜΑΚΕΔΟΝΙΑΣ</strong></p>
+        <ul>
+          <li>Το κράτος της Μακεδονίας</li>
+          <li>Το κράτος της Μακεδονίας επεκτείνεται</li>
+          <li>Αλέξανδρος - Η κατάκτηση της Ανατολής</li>
+          <li>Το έργο του Αλέξανδρου</li>
+        </ul>
+        
+        <p><em>Οι εκπαιδευτικοί: Παναγιώτα Αϊνατζή, Αναστασία Σικαρίδου</em></p>
+      `,
+      'B|Νέα (Γλώσσα)': `
+<h4>Ύλη Νεοελληνικής Γλώσσας Β΄ Γυμνασίου</h4>
+  <p><strong>ΥΛΗ ΕΞΕΤΑΣΕΩΝ ΠΕΡΙΟΔΟΥ ΙΟΥΝΙΟΥ 2026</strong></p>
+  <ul>
+    <li><strong>1η ενότητα:</strong> Β, Γ (σελ. 15-19)</li>
+    <li><strong>2η ενότητα:</strong> ολόκληρη - Α, Β, Γ, Δ, Ε, ΣΤ (σελ. 28-42)</li>
+    <li><strong>3η ενότητα:</strong> ολόκληρη - Α, Β, Γ, Δ, Ε (σελ. 44-56)</li>
+    <li><strong>4η ενότητα:</strong> Α, Β2, Β3, Δ, Ε (σελ. 58-61, 64-68, 70-72)</li>
+    <li><strong>5η ενότητα:</strong> Α, Β, Γ, ΣΤ (σελ. 74-83, 86)</li>
+  </ul>
+  <p><em>Οι διδάσκουσες:<br>
+  Αμοιραδάκη Αναστασία<br>
+  Δελή Αγάπη<br>
+  Ντούμα Λευκοθέα</em></p>
+`,
+'B|Νέα (Λογοτεχνία)': `
+<h4>Ύλη Κειμένων Νεοελληνικής Λογοτεχνίας Β΄ Γυμνασίου</h4>
+  <p><strong>ΥΛΗ ΕΞΕΤΑΣΕΩΝ ΠΕΡΙΟΔΟΥ ΙΟΥΝΙΟΥ 2026</strong></p>
+  <p><strong>Κείμενα</strong></p>
+  <ul>
+    <li>Ινδιάνος Σιάτλ, «Ένα παλιό μήνυμα για το σύγχρονο κόσμο», σελ. 19</li>
+    <li>Γιώργος Ιωάννου, «Να ’σαι καλά δάσκαλε», σελ. 32</li>
+    <li>Άννα Φρανκ, «Από το ημερολόγιο της Άννας Φρανκ», σελ. 48</li>
+    <li>Διονύσιος Σολωμός, «Η καταστροφή των Ψαρών», σελ. 79</li>
+    <li>Άντον Τσέχωφ, «Ένας αριθμός», σελ. 106</li>
+    <li>Δημοτικά τραγούδια της ξενιτιάς, «Θέλω να πα στην ξενιτιά», σελ. 126</li>
+    <li>Δημοτικά τραγούδια της ξενιτιάς, «Ξενιτεμένο μου πουλί», σελ. 127</li>
+    <li>Λορέντζος Μαβίλης, «Καλλιπάτειρα», σελ. 156</li>
+    <li>Γιάννης Μαγκλής, «Γιατί;», σελ. 170</li>
+    <li>Αντουάν ντε Σαιντ-Εξυπερύ, «Ο μικρός πρίγκηπας και η αλεπού», σελ. 184</li>
+  </ul>
+  <p><em>Οι διδάσκουσες:<br>
+  Αμοιραδάκη Αναστασία<br>
+  Ντούμα Λευκοθέα</em></p>
+`,
+
+      'B|Αγγλικά': `
+        <h4>Ύλη Αγγλικών Βʼ Γυμνασίου</h4>
+        <p>SB: Unit1-2 (έως lesson5, σελ.38)<br>
+        WB: Unit1-2 (έως lesson5, σελ.30)<br>
+        Grammar: Simple Present, Present Continuous, Present Perfect, Simple Past, Past Continuous, Comparisons</p>
+        <p><em>Διδάσκοντες/ουσες: Βασιλικού Φανή, Δόμβρος Παναγιώτης</em></p>
+      `,
+      'A|Αγγλικά': `
+        <h4>Ύλη Αγγλικών Α' Γυμνασίου</h4>
+        <p><strong>ΒΙΒΛΙΟ ΜΑΘΗΤΗ:</strong><br>
+        UNIT 1- σελ.1 έως 6<br>
+        UNIT 2- σελ.8 έως 23<br>
+        UNIT 3- σελ.28 έως 31</p>
+        
+        <p><strong>ΒΙΒΛΙΟ ΕΡΓΑΣΙΩΝ:</strong><br>
+        UNIT 1- σελ.2 έως 8<br>
+        UNIT 2- σελ.10 έως 26<br>
+        UNIT 3- σελ.28 έως 30</p>
+        
+        <p><strong>ΓΡΑΜΜΑΤΙΚΗ (ΒΙΒΛΙΟ ΜΑΘΗΤΗ σελ.159 έως 164):</strong><br>
+        - The verb "to be"<br>
+        - The verb "have got"<br>
+        - Plurals<br>
+        - There is/There are<br>
+        - Simple Present/ Adverbs of frequency<br>
+        - Present continuous<br>
+        - Nouns and Quantifiers</p>
+        
+        <p><em>Διδάσκουσα: Δημηνά Λεμονιά</em></p>
+      `,
+      'Γ|Αρχαία Πρωτότυπο': `
+        <h4>Ύλη Αρχαίας Ελληνικής Γλώσσας Γ' Γυμνασίου</h4>
+        <p><strong>Σχολικό Έτος 2024-2025</strong></p>
+        
+        <p><strong>Ενότητα 1:</strong> Α, Γ (σελίδες 8-10, 12-13)</p>
+        
+        <p><strong>Ενότητα 2:</strong> Α, Γ1, Ι. Παραθετικά επιθέτων, Α. Ομαλά παραθετικά (σελίδες 14-16, 18)</p>
+        
+        <p><strong>Ενότητα 4:</strong> Α (σελίδες 30-32), Ευκτική ενεργητικής και μέσης φωνής</p>
+        
+        <p><strong>Ενότητα 6:</strong> Α, Γ1, Γ2 (σελίδες 44-46, 48-51) (δεν είναι στην ύλη το Γ3, Η οριστική αντωνυμία, σελίδα 50)</p>
+        
+        <p><strong>Ενότητα 8:</strong> Α, Γ1 Ι, Γ2 (σελίδες 60-62, 64-69) (δεν είναι στην ύλη το Γ1 II, σελ. 66, αυτοπαθητικές αντωνυμίες)</p>
+        
+        <p><strong>Ενότητα 9:</strong> Γ2 (σελίδες 75-79)</p>
+        
+        <p><em>Οι διδάσκουσες:</em><br>
+        Βερεσόγλου Αικατερίνη<br>
+        Κυριαζοπούλου Ευαγγελία<br>
+        Φωτιάδου Μαρία</p>
+      `,
+'Γ|Αρχαία Λογοτεχνία': `
+  <h4>Δραματική ποίηση, Ευριπίδη Ελένη – Γ΄ Γυμνασίου</h4>
+  <p><strong>Ύλη εξετάσεων περιόδου Ιουνίου 2025:</strong></p>
+  <ul>
+    <li><strong>Εισαγωγή:</strong> σελ. 5–8</li>
+    <li><strong>Πρόλογος:</strong> στίχοι 1–191, σελ. 9–22</li>
+    <li><strong>Α΄ Επεισόδιο:</strong> στίχοι 437–575, σελ. 39–48</li>
+    <li><strong>Επιπάροδος – Β΄ Επεισόδιο:</strong> στίχοι 576–730 και 942–1219, σελ. 49–57 και 70–86</li>
+    <li><strong>Γ΄ Επεισόδιο:</strong> στίχοι 1286–1424, σελ. 93–102</li>
+    <li><strong>Λεξικό όρων της αρχαίας ελληνικής τραγωδίας:</strong> σελ. 142–144</li>
+  </ul>
+  <p><em>Οι διδάσκουσες:<br>Βερεσόγλου Αικατερίνη<br>Κυριαζοπούλου Ευαγγελία</em></p>
+`,
+
+'Γ|Αρχαία Πρωτότυπο': `
+  <h4>Ύλη Αρχαίας Ελληνικής Γλώσσας Γ΄ Γυμνασίου</h4>
+
+  <p><strong>Εξεταστέες Ενότητες:</strong></p>
+  <ul>
+    <li><strong>Ενότητα 1:</strong> Α, Γ (σελίδες 8–10, 12–13)</li>
+    <li><strong>Ενότητα 2:</strong> Α, Γ1, Ι – Παραθετικά επιθέτων, Α. Ομαλά παραθετικά (σελίδες 14–16, 18) (δεν είναι στην ύλη τα ανώμαλα παραθετικά επιθέτων και επιρρημάτων)</li>
+    <li><strong>Ενότητα 4:</strong> Α (σελίδες 30–32), Ευκτική ενεργητικής και μέσης φωνής</li>
+    <li><strong>Ενότητα 6:</strong> Α, Γ1, Γ2 (σελίδες 44–46, 48–51)<br>
+        <em>Εκτός ύλης:</em> Γ3 – Η οριστική αντωνυμία (σελίδα 50)</li>
+    <li><strong>Ενότητα 8:</strong> Α, Γ1 Ι, Γ2 (σελίδες 60–62, 64–69)<br>
+        <em>Εκτός ύλης:</em> Γ1 II – Αυτοπαθητικές αντωνυμίες (σελίδα 66)</li>
+    <li><strong>Ενότητα 9:</strong> Γ2 Οι δευτερεύουσες προτάσεις της αρχαίας ελληνικής (σελίδες 75–79)</li>
+  </ul>
+
+  <p><em>Οι διδάσκουσες:<br>
+   Κυριαζοπούλου Ευαγγελία<br>
+  Ντούμα Λευκοθέα</em></p>
+`,
+
+      'B|Ιστορία': `
+  <h4>ΜΕΣΑΙΩΝΙΚΗ ΚΑΙ ΝΕΟΤΕΡΗ ΙΣΤΟΡΙΑ Β΄ ΓΥΜΝΑΣΙΟΥ</h4>
+
+  <p><strong>Κεφάλαιο Πρώτο: Οι πρώτοι αιώνες του Βυζαντίου (330-717)</strong></p>
+  <p><strong>Ι. Η μετεξέλιξη του Ρωμαϊκού κράτους</strong></p>
+  <ol>
+    <li>Από τη Ρώμη στη Νέα Ρώμη</li>
+  </ol>
+  <p><strong>ΙΙ. Εξωτερικά προβλήματα και αναδιοργάνωση του κράτους</strong></p>
+  <ol start="2">
+    <li>Ο Ιουστινιανός και το έργο του</li>
+    <li>Ο Ηράκλειος και η δυναστεία του (610-717): Εσωτερική μεταρρύθμιση και αγώνας επιβίωσης</li>
+  </ol>
+
+  <p><strong>Κεφάλαιο Τρίτο: Περίοδος της μεγάλης ακμής του Βυζαντίου (717-1025)</strong></p>
+  <p><strong>Ι. Παγίωση της Βυζαντινής κυριαρχίας στα Βαλκάνια και τη Μ. Ασία</strong></p>
+  <ol start="4">
+    <li>Η διαμόρφωση της μεσαιωνικής ελληνικής βυζαντινής Αυτοκρατορίας</li>
+    <li>Η μεταβατική εποχή: Οι έριδες για το ζήτημα των εικόνων</li>
+    <li>Η βασιλεία του Μιχαήλ Γ΄ και η αυγή της Νέας Εποχής</li>
+  </ol>
+  <p><strong>ΙΙ. Κοινωνία και Οικονομία</strong></p>
+  <ol start="7">
+    <li>Οι Εξελίξεις στην Οικονομία και την Κοινωνία</li>
+    <li>Η νομοθεσία της Μακεδονικής δυναστείας και η σύγκρουσή της με τους «Δυνατούς»</li>
+  </ol>
+
+  <p><strong>Κεφάλαιο Τέταρτο: Περίοδος της κρίσης του Βυζαντίου (1025-1453)</strong></p>
+  <p><strong>Ι. Η εξασθένηση του Βυζαντίου και το Σχίσμα με τη Δύση</strong></p>
+  <ol start="9">
+    <li>Η κρίση και οι απώλειες της αυτοκρατορίας κατά τον 11ο αιώνα (1025-1081) (Μάχη του Ματζικερτ)</li>
+    <li>Οι Κομνηνοί και η μερική αναδιοργάνωση της αυτοκρατορίας</li>
+    <li>Η ενετική οικονομική διείσδυση και το σχίσμα των εκκλησιών</li>
+  </ol>
+  <p><strong>ΙΙ. Οι Σταυροφορίες και οι συνέπειές τους για το Βυζάντιο</strong></p>
+  <ol start="12">
+    <li>Οι σταυροφορίες και η πρώτη άλωση της Πόλης</li>
+  </ol>
+  <p><strong>ΙΙΙ. Ανασύσταση του Βυζαντίου και υποταγή στους Οθωμανούς</strong></p>
+  <ol start="13">
+    <li>Η άλωση της Πόλης</li>
+  </ol>
+
+  <p><strong>Κεφάλαιο Έκτο: Η μεσαιωνική Ευρώπη</strong></p>
+  <ol start="14">
+    <li>Ο Καρλομάγνος και η εποχή του</li>
+  </ol>
+
+  <p><strong>Κεφάλαιο Έβδομο: Η Ευρώπη στους νεότερους χρόνους (15ος-18ος αι.)</strong></p>
+  <p><strong>Ι. Οι ανακατατάξεις στη μεταμεσαιωνική ευρωπαϊκή κοινωνία</strong></p>
+  <ol start="15">
+    <li>Οι ανακαλύψεις</li>
+  </ol>
+
+  <p><em><strong>Διδάσκοντες/ουσες: Δημηνά Λεμονιά, Δόμβρος Παναγιώτης, Πανανικολάου Ευγενία</em></strong></p>
+`,
+      'Γ|Ιστορία': `
+        <h4>Ιστορία Γ' Γυμνασίου - Ύλη Εξετάσεων 2026</h4>
+        <ul>
+          <li><strong>Ενότητα 1η:</strong> σελ. 11 (το κίνημα του διαφωτισμού) – 13</li>
+          <li><strong>Ενότητα 3η:</strong> σελ. 16(οι τρεις τάξεις και εικόνα 1) - 17 (το πρώτο σύνταγμα 1791)</li>
+          <li><strong>Ενότητα 5η:</strong> σελ 23 (παράλληλα συντελούνταν σημαντικοί κοινωνικοί μετασχηματισμοί...), νέος ελληνικός διαφωτισμός, και τα ονόματα των δυο εκπροσώπων (Πηγές Βελεστινλής, Αδαμάντιος Κοραής)</li>
+          <li><strong>Ενότητα 7η:</strong> σελ. 28</li>
+          <li><strong>Ενότητα 8η:</strong> σελ. 30 (η ευνοϊκή συγκυρία και τα ονόματα των πρωταγωνιστών)</li>
+          <li><strong>Ενότητα 9η:</strong> σελ. 33 (εθνοσυνελεύσεις) – 34</li>
+          <li><strong>Ενότητα 10η:</strong> σελ. 36 (φιλελληνισμός)- 37</li>
+          <li><strong>Ενότητα 17η:</strong> σελ. 55-56</li>
+          <li><strong>Ενότητα 18η:</strong> σελ. 57 (η εκλογή και άφιξη του Όθωνα στην Ελλάδα) – 58 (η περίοδος της απόλυτης μοναρχίας του Όθωνα , η 3η Σεπτεμβρίου 1843)</li>
+          <li><strong>Ενότητα 19η:</strong> σελ. 59</li>
+          <li><strong>Ενότητα 20η:</strong> σελ. 61-63</li>
+          <li><strong>Ενότητα 21η:</strong> σελ. 64 (κρητικό ζήτημα: ορισμός)</li>
+          <li><strong>Ενότητα 22η:</strong> σελ. 67 (μακεδονικό ζήτημα: ορισμός)</li>
+          <li><strong>Ενότητα 27η:</strong> σελ. 82-83 το κίνημα στο γουδί (κυρίως τα αίτια)</li>
+          <li><strong>Ενότητα 28η:</strong> σελ. 84</li>
+          <li><strong>Ενότητα 29η:</strong> σελ. 85-86 (κυρίως τα αίτια και οι συμμαχίες των δυο βαλκανικών πολέμων)</li>
+          <li><strong>Ενότητα 30η:</strong> σελ. 87 (συνθήκη Βουκουρεστίου- νέες χώρες)</li>
+          <li><strong>Ενότητα 31η:</strong> σελ. 89- 91</li>
+          <li><strong>Ενότητα 32η:</strong> σελ. 92-93</li>
+          <li><strong>Ενότητα 34η:</strong> σελ. 97 (συνθήκη Σεβρών)</li>
+          <li><strong>Ενότητα 38η:</strong> σελ. 105-107</li>
+          <li><strong>Ενότητα 39η:</strong> σελ. 108-110 (ανακωχή Μουδανιών, δίκη των έξι, συνθήκη Λοζάνης)</li>
+        </ul>
+        <p><em>Οι εκπαιδευτικοί: Βερεσόγλου Αικατερίνη, Μανδραλή Ειρήνη, Παπανικολάου Ευγενία</em></p>
+      `,
+'B|Φυσική': `
+  <h4>ΥΛΗ ΦΥΣΙΚΗΣ Β’ ΓΥΜΝΑΣΙΟΥ 2025-26</h4>
+  <p><strong>ΕΞΕΤΑΣΤΕΑ ΥΛΗ</strong></p>
+  <p>ΚΕΦΑΛΑΙΟ 2: μόνο παράγραφος 2.2 σελ 29-30</p>
+  <p>ΚΕΦΑΛΑΙΟ 3: Ολόκληρο (εκτός από σελ 51 «δύναμη που ασκείται από τραχιά επιφάνεια, σελ. 52 «ανάλυση δύναμης και ανάλυση δύναμης σε κεκλιμένο επίπεδο» , σελ 58-59 «εφαρμογές»)</p>
+  <p>ΚΕΦΑΛΑΙΟ 4: Ολόκληρο εκτός από την παράγραφο 4.6 «πλεύση»</p>
+  <p>ΚΕΦΑΛΑΙΟ 5 : Μόνο η εισαγωγή και η παράγραφος 5.1 σελ 88-92</p>
+  <p>Όλες οι ασκήσεις- ερωτήσεις είτε από το βιβλίο είτε από φυλλάδια που αναφέρονται στην παραπάνω ύλη θεωρούνται εντός ύλης. Επίσης θα πρέπει να γνωρίζεται μετατροπές μονάδων για όλα τα φυσικά μεγέθη που τυχόν χρειαστεί (μήκος, μάζα, χρόνος, ταχύτητα, εμβαδόν, όγκος). Επίσης θα γνωρίζεται τον τύπο της πυκνότητας και πως χρησιμοποιείται.</p>
+  <p><strong>ΕΚΤΟΣ ΥΛΗΣ</strong></p>
+  <p>ΚΕΦΑΛΑΙΟ 1</p>
+  <p>ΚΕΦΑΛΑΙΟ 2 εκτός από την παράγραφο 2.2 σελ 29-30</p>
+  <p>ΚΕΦΑΛΑΙΟ 5 το υπόλοιπο εκτός της παραπάνω παραγράφου.</p>
+  <p><em>Η εισηγήτρια: Αραπίδου Μαγδαληνή</em></p>
+`,
+
+
+'Γ|Φυσική': `
+  <h4>ΥΛΗ ΦΥΣΙΚΗΣ Γ’ ΓΥΜΝΑΣΙΟΥ 2025-26</h4>
+  <p><strong>ΕΞΕΤΑΣΤΕΑ ΥΛΗ</strong></p>
+  <p>ΚΕΦΑΛΑΙΟ 1 –ΗΛΕΚΤΡΙΚΗ ΔΥΝΑΜΗ ΚΑΙ ΦΟΡΤΙΟ: μόνο η παράγραφος 1.4 «Τρόποι ηλέκτρισης»</p>
+  <p>ΚΕΦΑΛΑΙΟ 2 - ΗΛΕΚΤΡΙΚΟ ΡΕΥΜΑ: ολόκληρο (εκτός « Νόμος του Ωμ και μικρόκοσμος» «Μικροσκοπική ερμηνεία της αντίστασης ενός μεταλλικού αγωγού», σελ 47 και παράγραφο 2.4 σελ 48-49-50-51)</p>
+  <p>ΚΕΦΑΛΑΙΟ 3 – ΗΛΕΚΤΡΙΚΗ ΕΝΕΡΓΕΙΑ: μόνο τα παρακάτω: παράγραφος 3.1 «θερμικά αποτελέσματα του ηλεκτρικού ρεύματος» (Φαινόμενο Τζάουλ σελ. 65-66μισή) - εφαρμογές του φαινομένου Τζάουλ σελίδες 69-71 και παράγραφο 3.6 «Ενέργεια και Ισχύς»</p>
+  <p>ΚΕΦΑΛΑΙΟ 5 – ΜΗΧΑΝΙΚΑ ΚΥΜΑΤΑ (εκτός από τις υποπαραγράφους «Κυματικά φαινόμενα: Ανάκλαση και διάθλαση των μηχανικών κυμάτων» «Ανάκλαση» «Διάθλαση» σελ 103)</p>
+  <p>ΚΕΦΑΛΑΙΟ 6 - ΦΥΣΗ ΚΑΙ ΔΙΑΔΟΣΗ ΦΩΤΟΣ (εκτός από υποενότητα «Αρχή του ελαχίστου χρόνου» σελ 123)</p>
+  <p>ΚΕΦΑΛΑΙΟ 8 - ΔΙΑΘΛΑΣΗ ΤΟΥ ΦΩΤΟΣ : Παράγραφοι 8.1 «διάθλαση του φωτός» (Εκτός: Διάθλαση και αρχή του ελάχιστου χρόνου, Νόμος της διάθλασης -Snell).</p>
+  <p>« 8.3 Ανάλυση του φωτός» Μόνο η υποενότητα «Ανάλυση λευκού φωτός».</p>
+  <p>Όλες οι ασκήσεις –ερωτήσεις που αφορούν την παραπάνω ύλη είτε είναι από το βιβλίο είτε από φυλλάδια θεωρούνται εντός ύλης, καθώς επίσης και οι μετατροπές μονάδων όπου απαιτούνται.</p>
+  <p><em>Η εισηγήτρια: Αραπίδου Μαγδαληνή</em></p>
+`,
+
+      'A|Νέα (Γλώσσα)': `
+<h4>Ύλη Νέας Ελληνικής Γλώσσας Α΄ Γυμνασίου</h4>
+  <p><strong>Σχολικό έτος 2025-2026</strong></p>
+  <p><strong>Εξεταστέες Ενότητες:</strong></p>
+  <ul>
+    <li><strong>Ενότητα 1η:</strong> Α, Γ, Δ, Ε (εισαγωγικά κείμενα, είδη προτάσεων, επιστολή)</li>
+    <li><strong>Ενότητα 2η:</strong> Α, Β, Γ, Δ, Ε (εισαγωγικά κείμενα, ύφος, δομή παραγράφου, αίτηση, ημερολόγιο)</li>
+    <li><strong>Ενότητα 3η:</strong> Α, Β, Γ, Δ, Ε (εισαγωγικά κείμενα, περιγραφή, αφήγηση, επιχειρηματολογία, άρθρο)</li>
+    <li><strong>Ενότητα 4η:</strong> Α, Β, Γ, Δ, Ε, ΣΤ (εισαγωγικά κείμενα, επιθετικός προσδιορισμός, παραγωγή - σύνθεση λέξεων)</li>
+    <li><strong>Ενότητα 5η:</strong> Α, Β1, Β2.1, Β2.2, Β2.4, Β3, Γ, Δ, Ε, ΣΤ (εισαγωγικά κείμενα, ρήμα: πρόσωπο, χρόνοι, φωνές, συνδετικά ρήματα)</li>
+    <li><strong>Ενότητα 6η:</strong> Α, Β, Γ, Δ, Ε, ΣΤ (εισαγωγικά κείμενα, ονοματικοί ομοιόπτωτοι και ετερόπτωτοι προσδιορισμοί, παράγωγα ουσιαστικά)</li>
+  </ul>
+  <p><em>Διδάσκουσες: Βερεσόγλου Α., Μανδραλή Ε., Παπανικολάου Ε.</em></p>
+`,
+
+'A|Νέα (Λογοτεχνία)': `
+<h4>Ύλη Νεοελληνικής Λογοτεχνίας Α΄ Γυμνασίου</h4>
+  <p><strong>Σχολικό έτος 2025-2026</strong></p>
+  <p><strong>Εξεταστέα Κείμενα:</strong></p>
+  <ul>
+    <li>Λαϊκό παραμύθι, «Το πιο γλυκό ψωμί»</li>
+    <li>Λέων Τολστόι, «Ο παππούς και το εγγονάκι»</li>
+    <li>Νίκος Καζαντζάκης, «Η Νέα Παιδαγωγική»</li>
+    <li>Μαρούλα Κλιάφα, «Ο δρόμος για τον Παράδεισο είναι μακρύς»</li>
+    <li>Ειρήνη Μάρρα, «Τα κόκκινα λουστρίνια»</li>
+    <li>Λίτσα Ψαραύτη, «Ο Κωνσταντής»</li>
+    <li>Άντον Τσέχωφ, «Ο Βάνκας»</li>
+    <li>Μαρία Πυλιώτου, «Λεώνη»</li>
+  </ul>
+  <p><em>Διδάσκουσες: Δελή Α., Μανδραλή Ε., Παπανικολάου Ε.</em></p>
+`,
+'A|Αρχαία Πρωτότυπο': `
+<h4>Ύλη Αρχαίας Ελληνικής Γλώσσας Α΄ Γυμνασίου</h4>
+  <p><strong>Σχολικό έτος 2025-2026</strong></p>
+  <p><strong>Εξεταστέες Ενότητες:</strong></p>
+  <ul>
+    <li><strong>Ενότητα 2:</strong> Α, Γ</li>
+    <li><strong>Ενότητα 3:</strong> Γ</li>
+    <li><strong>Ενότητα 4:</strong> Α, Β1, Β2, Γ</li>
+    <li><strong>Ενότητα 5:</strong> Γ</li>
+    <li><strong>Ενότητα 6:</strong> Α, Β1, Β2, Γ</li>
+    <li><strong>Ενότητα 7:</strong> Α, Β2, Γ (εκτός από τη δεικτική αντωνυμία)</li>
+    <li><strong>Ενότητα 8:</strong> Β2, Γ</li>
+    <li><strong>Ενότητα 9:</strong> Β1, Β2, Γ</li>
+    <li><strong>Ενότητα 11:</strong> Β1, Β2 (σελ. 86 ασκήσεις 2 και 3), Γ</li>
+  </ul>
+  <p><em>Διδάσκουσες: Αινατζή Π., Ντούμα Λ., Παπανικολάου Ε.</em></p>
+`,
+'A|Αρχαία Λογοτεχνία': `
+<h4>Ύλη Αρχαίας Ελληνικής Γραμματείας Α΄ Γυμνασίου – Αρχαία Μετάφραση</h4>
+  <p><strong>Σχολικό έτος 2025-2026</strong></p>
+  <p><strong>Ραψωδίες:</strong></p>
+  <ul>
+    <li><strong>Ραψωδία α:</strong> στίχοι 1-25, 26-108 και 361-497</li>
+    <li><strong>Ραψωδία ε:</strong> στίχοι 165-251</li>
+    <li><strong>Ραψωδία ι:</strong> στίχοι 240-512</li>
+  </ul>
+  <p><strong>Έννοιες:</strong> ενανθρώπιση, επιφάνεια, ανθρωπομορφισμός, ανθρωποκεντρικός χαρακτήρας, επική ειρωνεία, πλατιά παρομοίωση, διάλογος, περιγραφή.</p>
+  <p><em>Διδάσκουσες: Δελή Α., Παπανικολάου Ε.</em></p>
+`,
+
+      'B|Αρχαία Πρωτότυπο': `
+<h4>Ύλη Αρχαίας Ελληνικής Γλώσσας Β΄ Γυμνασίου</h4>
+  <p><strong>ΥΛΗ ΕΞΕΤΑΣΕΩΝ ΠΕΡΙΟΔΟΥ ΙΟΥΝΙΟΥ 2026</strong></p>
+
+  <p><strong>Κείμενα</strong></p>
+  <ul>
+    <li>Ενότητα 2Α (σελίδα 14-15)</li>
+    <li>Ενότητα 3Α (σελίδα 22-23)</li>
+    <li>Ενότητα 4Α (σελίδα 30-31)</li>
+    <li>Ενότητα 7Α (σελίδα 52-53)</li>
+    <li>Ενότητα 9Α (σελίδα 68-69)</li>
+  </ul>
+
+  <p><strong>Λεξιλόγιο - Ετυμολογικά</strong></p>
+  <ul>
+    <li>Ενότητα 2 Β1-Β2 (σελίδα 17-18)</li>
+    <li>Ενότητα 3 Β1-Β2 (σελίδα 24-25)</li>
+    <li>Ενότητα 6 Β1 (σελίδα 47)</li>
+    <li>Ενότητα 7 Β1 (σελίδα 54)</li>
+    <li>Ενότητα 9 Β1 (σελίδα 71-72)</li>
+  </ul>
+
+  <p><strong>Γραμματική</strong></p>
+  <ul>
+    <li>Γ΄ κλίση ουσιαστικών (σελίδα 95-96, 111) από το βιβλίο Α΄ Γυμνασίου</li>
+    <li>Γ΄ κλίση ουσιαστικών (σελίδα 19-20, 26-27)</li>
+    <li>Γ΄ κλίση επιθέτων (σελίδα 35, 49)</li>
+    <li>Αόριστη αντωνυμία (σελίδα 50)</li>
+    <li>Υποτακτική ενεργητικής φωνής (σελίδα 36, 42)</li>
+    <li>Υποτακτική μέσης φωνής (σελίδα 103)</li>
+    <li>Προστακτική ενεργητικής φωνής (σελίδα 88, 95)</li>
+    <li>Οριστική μέσης φωνής (σελίδα 112, 118, 124) από το βιβλίο Α΄ Γυμνασίου<br>
+      <em>Εκτός ύλης:</em> Παρακείμενος και Υπερσυντέλικος αφωνόληκτων ρημάτων</li>
+    <li>Απαρέμφατο και μετοχή μέσης φωνής (σελίδα 131) από το βιβλίο Α΄ Γυμνασίου</li>
+  </ul>
+
+  <p><strong>Συντακτικό</strong></p>
+  <ul>
+    <li>Αντικείμενο άμεσο, έμμεσο (σελίδα 65)</li>
+    <li>Απαρέμφατο (ειδικό - τελικό) (σελίδα 104) από το βιβλίο Α΄ Γυμνασίου</li>
+    <li>Υποκείμενο απαρεμφάτου (ταυτοπροσωπία - ετεροπροσωπία) (σελίδα 132) από το βιβλίο Α΄ Γυμνασίου</li>
+  </ul>
+
+  <p><em>Οι διδάσκουσες:<br>
+  Αμοιραδάκη Αναστασία<br>
+  Δελή Αγάπη<br>
+  Μανδραλή Ειρήνη</em></p>
+`,
+'B|Αρχαία Λογοτεχνία': `
+  <h4>Ύλη Αρχαίας Ελληνικής Γραμματείας Β΄ Γυμνασίου – Ομήρου Ιλιάδα (μετάφραση)</h4>
+  <p><strong>Εξεταστέες Ραψωδίες:</strong></p>
+  <ul>
+    <li>Ραψωδία Α΄: στίχοι 1–306 και 494–612 (σελ. 18–32 & 40–45)</li>
+    <li>Ραψωδία Ζ΄: στίχοι 369–529 (σελ. 71–78)</li>
+    <li>Ραψωδία Π΄: στίχοι 684–867 (σελ. 112–118)</li>
+  </ul>
+  <p><em>Διδάσκουσες: Αμοιραδάκη Αναστασία, Βερεσόγλου Αικατερίνη</em></p>
+`,
+'Γ|Νέα (Γλώσσα)': `
+  <h4>Ύλη Νέας Ελληνικής Γλώσσας Γ΄ Γυμνασίου</h4>
+
+  <p><strong>Εξεταστέα Ύλη:</strong></p>
+  <ul>
+    <li><strong>1η Ενότητα:</strong> Α, Β, Δ, Ε, σελίδες 10-20,  23-28΄</li>
+    <li><strong>2η Ενότητα:</strong> Α, Β, Γ, Δ, Ε, σελίδες 30-44</li>
+    <li><strong>3η Ενότητα:</strong> Α, Β, Γ, Δ, Ε, σελίδες 46-62</li>
+    <li><strong>4η Ενότητα:</strong> Α, Β, Γ, Δ, Ε, σελίδες 64-86</li>
+    <li><strong>5η Ενότητα:</strong> Α, Β, Ε,  σελίδες 88-96,  102-104</li>
+<li><strong>6η Ενότητα:</strong> Β1, σελίδες 109-1114</li>
+<li><strong>7η Ενότητα:</strong> Β2, σελίδες 125-127</li>
+  </ul>
+  <p><em>Οι διδάσκουσες: Αϊνατζή Παναγιώτα, Αμοιραδάκη Αναστασία, Κυριαζοπούλου Ευαγγελία</em></p>
+  `,
+'Γ|Νέα (Λογοτεχνία)': `
+  <h4>Ύλη Νεοελληνικής Λογοτεχνίας Γ΄ Γυμνασίου</h4>
+
+  <p><strong>Εξεταστέα Κείμενα από το σχολικό βιβλίο:</strong></p>
+  <ul>
+    <li>Δημοτικό τραγούδι, «Του γιοφυριού της Άρτας», σελ. 12</li>
+    <li><Βιτσέντσος Κορνάρος, «Ερωτόκριτος», σελ. 19</li>
+<li>«Ελισάβετ Μουτζάν-Μαρτινέγκου, «Αυτοβιογραφία», σελ. 50</li>
+    <li>Διονύσιος Σολωμός, «Ελεύθεροι Πολιορκημένοι», σελ.61</li>
+    <li>Κ. Π. Καβάφης, «Στα 200 π.Χ.», σελ. 123</li>
+    <li>«Τα ζα»</strong> – Στρατής Μυριβήλης</li>
+    <li>Γιώργος Σεφέρης, «Ομιλία στη Στοκχόλμη», σελ. 169 </li>
+    <li>Αντώνης Σαμαράκης, «Ζητείται ελπίς», σελ. 235 </li>
+   </ul>
+
+  <p><em>Οι διδάσκουσες:<br>
+  Αϊνατζή Παναγιώτα<br>
+  Κυριαζοπούλου Ευαγγελία<br></em></p>
+`,
+
+      'Γ|Αγγλικά': `
+        <h4>Ύλη Αγγλικών Γʼ Γυμνασίου</h4>
+        <p>SB: Units1-5<br>
+        WB: Units1-5<br>
+        Grammar: All tenses, Conditionals, Gerunds, Infinitives, Tranformations</p>
+        <p><em>Διδάσκουσα: Βασιλικού Φανή</em></p>
+      `
+    };
+    document.querySelectorAll('.btn').forEach(btn => btn.addEventListener('click', () => {
+      const subj = btn.dataset.subject;
+      const grp = btn.closest('.btn-group').dataset.group;
+      titleEl.textContent = `Τάξη ${grp} · ${subj}`;
+      bodyEl.innerHTML = contentMap[`${grp}|${subj}`] || `<p>Το υλικό για το μάθημα "${subj}" θα προστεθεί σύντομα.</p>`;
+      modal.style.display = 'block';
+    }));
+    closeBtn?.addEventListener('click', () => modal.style.display = 'none');
+    window.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+  </script>
 </body>
 </html>
